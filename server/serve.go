@@ -38,7 +38,7 @@ func (rcv *articleHandler) ServeHTTP(res http.ResponseWriter, req *http.Request)
 func StartServer() {
 	log.Println("Starting Server...")
 	http.Handle("/getArticle", &articleHandler{})
-	http.ListenAndServe(":8444", nil)
+	http.ListenAndServe(":8080", nil)
 }
 
 func printPostRequest(req http.Request) {
