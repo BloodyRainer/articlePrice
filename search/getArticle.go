@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"strings"
 	"github.com/BloodyRainer/articlePrice/model"
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/urlfetch"
 )
 
 var priceReg *regexp.Regexp
@@ -24,10 +26,10 @@ func init() {
 	nameReg = regexp.MustCompile(`<h1.*itemprop="name".*>(.*)</h1>`)
 }
 
-func GetRandomArticle() (*model.Article, error) {
+func GetRandomArticle(req *http.Request) (*model.Article, error) {
 	aNr := model.RandomArticleNr()
 
-	name, price, err := requestNameAndPriceByArctileNr(aNr)
+	name, price, err := requestNameAndPriceByArctileNr(req, aNr)
 	if err != nil {
 		log.Print("no product with number: ", aNr)
 		return nil, err
@@ -43,8 +45,8 @@ func GetRandomArticle() (*model.Article, error) {
 
 }
 
-func requestNameAndPriceByArctileNr(articleNr string) (string, string, error) {
-	respBody, err := searchArticle(articleNr)
+func requestNameAndPriceByArctileNr(req *http.Request, articleNr string) (string, string, error) {
+	respBody, err := searchArticle(req, articleNr)
 
 	name, err := getName(respBody)
 	if err != nil {
@@ -82,8 +84,10 @@ func getPrice(body string) (string, error) {
 	return priceMatch[1], nil
 }
 
-func searchArticle(nr string) (string, error) {
-	client := &http.Client{}
+func searchArticle(orgReq *http.Request, nr string) (string, error) {
+	ctx := appengine.NewContext(orgReq)
+
+	client := urlfetch.Client(ctx)
 
 	query := queryPrefix + nr
 

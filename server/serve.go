@@ -4,50 +4,63 @@ import (
 	"net/http"
 	"github.com/BloodyRainer/articlePrice/search"
 	"encoding/json"
-	"log"
 	"io/ioutil"
-	"fmt"
+	engLog "google.golang.org/appengine/log"
+	"google.golang.org/appengine"
+	"context"
+	"log"
 )
 
 type articleHandler struct{}
 
 func (rcv *articleHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
-	a, err := search.GetRandomArticle()
+	ctx := appengine.NewContext(req)
+
+	a, err := search.GetRandomArticle(req)
 	if err != nil {
-		log.Println(err)
+		engLog.Errorf(ctx, err.Error())
 		res.WriteHeader(http.StatusInternalServerError)
 		res.Write([]byte(err.Error()))
 		return
 	}
 
+	if req.Method == http.MethodPost {
+		logPostRequest(ctx, req)
+	}
+
+	res.Header().Add("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
-	req.Header.Set("Content-Type", "application/json")
 
 	enc := json.NewEncoder(res)
 	enc.Encode(a)
 
-	log.Println("responded Article:", *a)
-
-	if req.Method == http.MethodPost {
-		printPostRequest(*req)
-	}
+	engLog.Infof(ctx, "responded Article:", *a)
 
 }
 
-func StartServer() {
+func Start() {
 	log.Println("Starting Server...")
 	http.Handle("/getArticle", &articleHandler{})
 	http.ListenAndServe(":8080", nil)
 }
 
-func printPostRequest(req http.Request) {
+func logPostRequest(ctx context.Context, req *http.Request) {
 
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		log.Println(err.Error())
+		engLog.Errorf(ctx, err.Error())
 	}
 
-	fmt.Println(string(body))
+	engLog.Debugf(ctx, "logging post-body...")
+
+	bodyStr := string(body)
+
+	if bodyStr != "" {
+		engLog.Debugf(ctx, bodyStr)
+	} else {
+		engLog.Debugf(ctx, "body string is empty")
+	}
+
 
 }

@@ -1,9 +1,9 @@
-package main
+package appengine
 
 import (
 	"github.com/BloodyRainer/articlePrice/server"
 )
 
-func main() {
+func init() {
 	server.Start()
 }
