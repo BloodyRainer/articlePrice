@@ -15,27 +15,26 @@ func MakeDfRequest(body []byte) (*DfRequest, error) {
 	}
 
 	return &dfRequest, nil
-
 }
 
 type DfRequest struct {
-	ResponseId  string       `json:"responseId,omitempty"`
-	Session     string       `json:"session,omitempty"`
-	QueryResult *QueryResult `json:"queryResult,omitempty"`
+	ResponseId                  string                 `json:"responseId,omitempty"`
+	Session                     string                 `json:"session,omitempty"`
+	QueryResult                 *QueryResult           `json:"queryResult,omitempty"`
+	OriginalDetectIntentRequest *OriginalIntentRequest `json:"originalDetectIntentRequest,omitempty"`
 }
 
 type QueryResult struct {
-	QueryText                   string          `json:"queryText,omitempty"`
-	Parameters                  json.RawMessage `json:"parameters,omitempty"`
-	AllRequiredParamsPresent    bool            `json:"allRequiredParamsPresent,omitempty"`
-	FulfillmentText             string          `json:"fulfillmentText,omitempty"`
-	FulfillmentMessages         []Message       `json:"fulfillmentMessages,omitempty"`
-	OutputContexts              []Context       `json:"outputContexts,omitempty"`
-	Intent                      *Intent         `json:"intent,omitempty"`
-	IntentDetectionConfidence   int             `json:"intentDetectionConfidence,omitempty"`
-	DiagnosticInfo              *DiagnosticInfo `json:"diagnosticInfo,omitempty"`
-	LanguageCode                string          `json:"languageCode,omitempty"`
-	OriginalDetectIntentRequest DfRequest       `json:"originalDetectIntentRequest,omitempty"`
+	QueryText                 string          `json:"queryText,omitempty"`
+	Parameters                json.RawMessage `json:"parameters,omitempty"`
+	AllRequiredParamsPresent  bool            `json:"allRequiredParamsPresent,omitempty"`
+	FulfillmentText           string          `json:"fulfillmentText,omitempty"`
+	FulfillmentMessages       []Message       `json:"fulfillmentMessages,omitempty"`
+	OutputContexts            []Context       `json:"outputContexts,omitempty"`
+	Intent                    *Intent         `json:"intent,omitempty"`
+	IntentDetectionConfidence float32         `json:"intentDetectionConfidence,omitempty"`
+	DiagnosticInfo            *DiagnosticInfo `json:"diagnosticInfo,omitempty"`
+	LanguageCode              string          `json:"languageCode,omitempty"`
 }
 
 type Intent struct {
@@ -44,4 +43,10 @@ type Intent struct {
 }
 
 type DiagnosticInfo struct {
+}
+
+type OriginalIntentRequest struct {
+	Source  string   `json:"source,omitempty"`
+	Version string   `json:"version,omitempty"`
+	Payload *Payload `json:"payload,omitempty"`
 }

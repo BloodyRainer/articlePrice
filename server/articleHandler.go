@@ -52,10 +52,12 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	json.NewEncoder(w).Encode(dr)
+	//TestJson
+	//b := dfReq.OriginalDetectIntentRequest.Payload.AvailableSurfaces
+	//str := fmt.Sprintf("das: %v",b)
 
-	engLog.Infof(ctx, "dfReq responseId: " + dfReq.ResponseId)
-	//engLog.Infof(ctx, "dfReq languageCode: " +dfReq.QueryResult.LanguageCode)
+	json.NewEncoder(w).Encode(dr)
+	engLog.Infof(ctx, "dialogflow request responseId: "+dfReq.ResponseId)
 
 }
 
@@ -77,7 +79,7 @@ func logPostBody(ctx context.Context, body []byte) {
 	bodyStr := string(body)
 
 	if bodyStr != "" {
-		engLog.Debugf(ctx, "req-body: " + bodyStr)
+		engLog.Debugf(ctx, "req-body: "+bodyStr)
 	} else {
 		engLog.Debugf(ctx, "body string is empty")
 	}

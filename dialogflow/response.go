@@ -18,7 +18,7 @@ func MakeArticleNameResponse(a model.Article) *DfResponse {
 	dr := &DfResponse{
 		Source: "Der Preis ist heiss",
 		Payload: &Payload{
-			Google: Google{
+			Google: &Google{
 				ExpectUserResponse: true,
 				RichResponse: &RichResponse{
 					Items: []Item{
@@ -37,10 +37,6 @@ func MakeArticleNameResponse(a model.Article) *DfResponse {
 
 type SimpleResponses struct {
 	SimpleResponses []SimpleResponse `json:"simpleResponses,omitempty"`
-}
-
-type Payload struct {
-	Google Google `json:"google,omitempty"`
 }
 
 type EventInput struct {

@@ -1,6 +1,6 @@
 package dialogflow
 
 type Status struct {
-	Code int `json "code"`
+	Code      int    `json "code"`
 	ErrorType string `json "errorType"`
 }
