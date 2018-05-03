@@ -7,55 +7,79 @@ import (
 	"github.com/BloodyRainer/articlePrice/search"
 	engLog "google.golang.org/appengine/log"
 	"github.com/BloodyRainer/articlePrice/dialogflow"
+	"io/ioutil"
+	"context"
+	"errors"
 )
 
 type articleHandler struct{}
 
-func (rcv *articleHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	ctx := appengine.NewContext(req)
+	var dfReq *dialogflow.DfRequest
+	var err error
 
-	if req.Method == http.MethodPost {
-		logPostRequest(ctx, req)
+	ctx := appengine.NewContext(r)
+
+	if r.Method == http.MethodPost {
+
+		body, err := readPostBody(ctx, r)
+		if err != nil {
+			http.Error(w, err.Error(), 400)
+			return
+		}
+
+		logPostBody(ctx, body)
+
+		dfReq, err = dialogflow.MakeDfRequest(body)
+		if err != nil {
+			http.Error(w, err.Error(), 400)
+			return
+		}
 	}
 
 	//TODO: GetArctileByNumber if request contains ArticleNr
-	a, err := search.GetRandomArticle(req)
+	a, err := search.GetRandomArticle(r)
 	if err != nil {
 		engLog.Errorf(ctx, err.Error())
-		res.WriteHeader(http.StatusInternalServerError)
-		res.Write([]byte(err.Error()))
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
 		return
 	}
 
 	dr := dialogflow.MakeArticleNameResponse(*a)
 
-	res.Header().Add("Content-Type", "application/json")
-	res.WriteHeader(http.StatusOK)
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 
-	json.NewEncoder(res).Encode(dr)
-	//res.Write([]byte(justTrying5()))
+	json.NewEncoder(w).Encode(dr)
 
-	//engLog.Infof(ctx, "response:", dr.Payload.Google.RichResponse.Items[0].SimpleResponse.TextToSpeech)
+	engLog.Infof(ctx, "dfReq responseId: " + dfReq.ResponseId)
+	//engLog.Infof(ctx, "dfReq languageCode: " +dfReq.QueryResult.LanguageCode)
 
 }
 
-func justTrying() string {
-	return `{"conversationToken":"[]","expectUserResponse":true,"expectedInputs":[{"inputPrompt":{"richInitialPrompt":{"items":[{"simpleResponse":{"textToSpeech":"Hallo, willkommen zu der Preis ist heiß. Sage 'nächster Artikel' um zu starten!"}}]}},"possibleIntents":[{"intent":"assistant.intent.action.TEXT"}]}],"responseMetadata":{"status":{"message":"Success (200)"},"queryMatchInfo":{"queryMatched":true,"intent":"9230d0d0-f738-439d-ab10-b1d75ab9e477"}}}`
+func readPostBody(ctx context.Context, r *http.Request) ([]byte, error) {
+	if r.Body == nil {
+		return nil, errors.New("body of post request is nil")
+	}
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return nil, errors.New("unable to read body: " + err.Error())
+	}
+
+	return body, nil
 }
 
-func justTrying2() string {
-	return `{"fulfillmentText":"Thisisatextresponse","fulfillmentMessages":[{"card":{"title":"cardtitle","subtitle":"cardtext","imageUri":"https://assistant.google.com/static/images/molecule/Molecule-Formation-stop.png","buttons":[{"text":"buttontext","postback":"https://assistant.google.com/"}]}}],"source":"example.com","payload":{"google":{"expectUserResponse":true,"richResponse":{"items":[{"simpleResponse":{"textToSpeech":"thisisasimpleresponse"}}]}},"facebook":{"text":"Hello,Facebook!"},"slack":{"text":"ThisisatextresponseforSlack."}},"outputContexts":[{"name":"projects/${PROJECT_ID}/agent/sessions/${SESSION_ID}/contexts/contextname","lifespanCount":5,"parameters":{"param":"paramvalue"}}],"followupEventInput":{"name":"eventname","languageCode":"en-US","parameters":{"param":"paramvalue"}}`
-}
+func logPostBody(ctx context.Context, body []byte) {
 
-func justTrying3() string {
-	return `{"conversationToken":"","expectUserResponse":true,"expectedInputs":[{"inputPrompt":{"richInitialPrompt":{"items":[{"simpleResponse":{"textToSpeech":"Howdy!Icantellyoufunfactsaboutalmostanynumber,like42.Whatdoyouhaveinmind?","displayText":"Howdy!Icantellyoufunfactsaboutalmostanynumber.Whatdoyouhaveinmind?"}}],"suggestions":[]}},"possibleIntents":[{"intent":"actions.intent.TEXT"}]}]}`
-}
+	bodyStr := string(body)
 
-func justTrying4() string {
-	return `{ source: 'source-of-the-response',speech: 'message read by voice assistant',displayText: 'message displayed on the user device screen.'}`
-}
+	if bodyStr != "" {
+		engLog.Debugf(ctx, "req-body: " + bodyStr)
+	} else {
+		engLog.Debugf(ctx, "body string is empty")
+	}
 
-func justTrying5() string {
-	return `{"conversationToken":"[]","expectUserResponse":true,"expectedInputs":[{"inputPrompt":{"richInitialPrompt":{"items":[{"simpleResponse":{"textToSpeech":"sinnvoll"}}]}},"possibleIntents":[{"intent":"assistant.intent.action.TEXT"}]}],"responseMetadata":{"status":{"message":"Success(200)"},"queryMatchInfo":{"queryMatched":true,"intent":"8a757836-9f86-4006-b98d-eeb1e56c051c"}}}`
 }

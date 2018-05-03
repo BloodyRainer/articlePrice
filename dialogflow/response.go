@@ -1,8 +1,11 @@
 package dialogflow
 
-import "github.com/BloodyRainer/articlePrice/model"
+import (
+	"github.com/BloodyRainer/articlePrice/model"
+	"encoding/json"
+)
 
-type DialogResponse struct {
+type DfResponse struct {
 	FulfillmentText     string      `json:"fulfillmentText,omitempty"`
 	FulfillmentMessages []Message   `json:"fulfillmentMessages,omitempty"`
 	Source              string      `json:"source,omitempty"`
@@ -11,8 +14,8 @@ type DialogResponse struct {
 	FollowupEventInput  *EventInput `json:"followupEventInput,omitempty"`
 }
 
-func MakeArticleNameResponse(a model.Article) *DialogResponse {
-	dr := &DialogResponse{
+func MakeArticleNameResponse(a model.Article) *DfResponse {
+	dr := &DfResponse{
 		Source: "Der Preis ist heiss",
 		Payload: &Payload{
 			Google: Google{
@@ -32,39 +35,18 @@ func MakeArticleNameResponse(a model.Article) *DialogResponse {
 	return dr
 }
 
-type Message struct {
-	Card            *Card            `json:"card,omitempty"`
-	Platform        string           `json:"platform,omitempty"`
-	SimpleResponses *SimpleResponses `json:"simpleResponses,omitempty"`
-	Text            *Text            `json:"text,omitempty"`
-}
-
 type SimpleResponses struct {
 	SimpleResponses []SimpleResponse `json:"simpleResponses,omitempty"`
-}
-
-type Text struct {
-	Text []string `json:"text,omitempty"`
 }
 
 type Payload struct {
 	Google Google `json:"google,omitempty"`
 }
 
-type Context struct {
-	Name          string      `json:"name,omitempty"`
-	LifespanCount int         `json:"lifespanCount,omitempty"`
-	Parameters    []Parameter `json:"parameters,omitempty"`
-}
-
-type Parameter struct {
-	Param string `json:"param,omitempty"`
-}
-
 type EventInput struct {
-	Name         string      `json:"name,omitempty"`
-	LanguageCode string      `json:"languageCode,omitempty"`
-	Parameters   []Parameter `json:"parameters,omitempty"`
+	Name         string          `json:"name,omitempty"`
+	LanguageCode string          `json:"languageCode,omitempty"`
+	Parameters   json.RawMessage `json:"parameters,omitempty"`
 }
 
 type Google struct {
