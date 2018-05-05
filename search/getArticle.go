@@ -3,8 +3,8 @@ package search
 import (
 	"log"
 	"regexp"
-	"net/http"
 	"github.com/BloodyRainer/articlePrice/model"
+	"context"
 )
 
 var priceReg *regexp.Regexp
@@ -21,10 +21,10 @@ func init() {
 }
 
 // Appengine needs the original request.
-func GetRandomArticle(req *http.Request) (*model.Article, error) {
+func GetRandomArticle(ctx context.Context) (*model.Article, error) {
 	aNr := model.RandomArticleNr()
 
-	a, err:= requestNameAndPriceByArctileNr(req, aNr)
+	a, err := requestNameAndPriceByArctileNr(ctx, aNr)
 	if err != nil {
 		log.Print("no article with number: ", aNr)
 		return nil, err
@@ -33,19 +33,38 @@ func GetRandomArticle(req *http.Request) (*model.Article, error) {
 	return a, nil
 }
 
-func GetArticleByArticleNr(req *http.Request, aNr string) (*model.Article, error){
+//func GetPriceByArticleNr(ctx context.Context, aNr string) (float64, error) {
+//	respBody, err := searchArticle(ctx, aNr)
+//	if err != nil {
+//		return -1, err
+//	}
+//
+//	price, err := getPrice(respBody)
+//	if err != nil {
+//		return -1, err
+//	}
+//
+//	p, err := strconv.ParseFloat(price, 64)
+//	if err != nil {
+//		return -1, err
+//	}
+//
+//	return p, nil
+//}
 
-	a, err:= requestNameAndPriceByArctileNr(req, aNr)
-	if err != nil {
-		log.Print("no article with number: ", aNr)
-		return nil, err
-	}
-
-	return a, nil
-}
-
-func requestNameAndPriceByArctileNr(req *http.Request, articleNr string) (*model.Article, error) {
-	respBody, err := searchArticle(req, articleNr)
+//func GetArticleByArticleNr(ctx context.Context, aNr string) (*model.Article, error) {
+//
+//	a, err := requestNameAndPriceByArctileNr(ctx, aNr)
+//	if err != nil {
+//		log.Print("no article with number: ", aNr)
+//		return nil, err
+//	}
+//
+//	return a, nil
+//}
+//
+func requestNameAndPriceByArctileNr(ctx context.Context, articleNr string) (*model.Article, error) {
+	respBody, err := searchArticle(ctx, articleNr)
 
 	name, err := getName(respBody)
 	if err != nil {

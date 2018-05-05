@@ -1,7 +1,6 @@
 package dialogflow
 
 import (
-	"github.com/BloodyRainer/articlePrice/model"
 	"encoding/json"
 )
 
@@ -12,27 +11,6 @@ type DfResponse struct {
 	Payload             *Payload    `json:"payload,omitempty"` //TODO: is this actually called data? https://developers.google.com/actions/dialogflow/webhook
 	OutputContexts      []Context   `json:"outputContexts,omitempty"`
 	FollowupEventInput  *EventInput `json:"followupEventInput,omitempty"`
-}
-
-func MakeArticleNameResponse(a model.Article) *DfResponse {
-	dr := &DfResponse{
-		Source: "Der Preis ist heiss",
-		Payload: &Payload{
-			Google: &Google{
-				ExpectUserResponse: true,
-				RichResponse: &RichResponse{
-					Items: []Item{
-						{
-							SimpleResponse: &SimpleResponse{
-								TextToSpeech: "Wie ist der Preis von: " + a.Name + "?",
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-	return dr
 }
 
 type SimpleResponses struct {

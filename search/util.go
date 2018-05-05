@@ -4,16 +4,15 @@ import (
 	"google.golang.org/appengine/urlfetch"
 	"net/url"
 	"io/ioutil"
-	"google.golang.org/appengine"
 	"net/http"
 	"log"
 	"errors"
 	"strings"
+	"context"
 )
 
 // Appengine needs the original request.
-func searchArticle(orgReq *http.Request, nr string) (string, error) {
-	ctx := appengine.NewContext(orgReq)
+func searchArticle(ctx context.Context, nr string) (string, error) {
 
 	client := urlfetch.Client(ctx)
 
@@ -61,6 +60,10 @@ func getName(body string) (string, error) {
 	// TODO: dirty hacks
 	name := strings.Replace(nameMatch[1], "&quot;", `"`, -1)
 	name = strings.Replace(name, "&amp;", "&", -1)
+	name = strings.Replace(name, "ä", "ae", -1)
+	name = strings.Replace(name, "ö", "oe", -1)
+	name = strings.Replace(name, "ü", "ue", -1)
+	name = strings.Replace(name, "ß", "ss", -1)
 
 	return name, nil
 }
