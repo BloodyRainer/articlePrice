@@ -62,18 +62,15 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	//TestJson
-	//b := dfReq.OriginalDetectIntentRequest.Payload.AvailableSurfaces
-	//str := fmt.Sprintf("das: %v",b)
-
 	json.NewEncoder(w).Encode(dfRes)
-	//engLog.Infof(ctx, "dialogflow request responseId: "+dfReq.ResponseId)
-	//engLog.Infof(ctx, "answered: %v", dr)
 
 }
 
 func askQuestion(ctx context.Context, dfReq *dialogflow.DfRequest) (*dialogflow.DfResponse, error) {
 	a, err := search.GetRandomArticle(ctx)
+
+	engLog.Infof(ctx, "random article: " + a.String())
+
 	if err != nil {
 		return nil, err
 	}
