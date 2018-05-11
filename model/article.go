@@ -7,8 +7,9 @@ type Article struct {
 	Name      string `json:"articleName"`
 	Price     string `json:"articlePrice"`
 	ImgUrl    string `json:"imgUrl"`
+	Link      string `json:"link"`
 }
 
 func (rcv Article) String() string {
-	return fmt.Sprintf("[ArticleNr: %v, Name: %v, Price: %v, ImgUrl: %v]", rcv.ArticleNr, rcv.Name, rcv.Price, rcv.ImgUrl)
+	return fmt.Sprintf("[ArticleNr: %v, Name: %v, Price: %v, ImgUrl: %v, Link: %v]", rcv.ArticleNr, rcv.Name, rcv.Price, rcv.ImgUrl, rcv.Link)
 }

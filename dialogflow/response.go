@@ -29,11 +29,35 @@ type Google struct {
 }
 
 type RichResponse struct {
-	Items []Item `json:"items,omitempty"`
+	Items             []Item             `json:"items,omitempty"`
+	Suggestions       []Suggestion       `json:"suggestions,omitempty"`
+	LinkOutSuggestion *LinkOutSuggestion `json:"linkOutSuggestion,omitempty"`
 }
 
 type Item struct {
 	SimpleResponse *SimpleResponse `json:"simpleResponse,omitempty"`
+	BasicCard      *BasicCard      `json:"basicCard,omitempty"`
+}
+
+type Suggestion struct {
+	Title string `json:"title,omitempty"`
+}
+
+type LinkOutSuggestion struct {
+	DestinationName string `json:"destinationName,omitempty"`
+	Url             string `json:"url,omitempty"`
+}
+
+type BasicCard struct {
+	Title         string `json:"title,omitempty"`
+	Subtitle      string `json:"subtitle,omitempty"`
+	FormattedText string `json:"formattedText,omitempty"`
+	Image         *Image `json:"image,omitempty"`
+}
+
+type Image struct {
+	Url               string `json:"url,omitempty"`
+	AccessibilityText string `json:"accessibilityText,omitempty"`
 }
 
 type SimpleResponse struct {

@@ -28,7 +28,7 @@ func init() {
 }
 
 // Appengine needs the original request.
-func searchArticle(ctx context.Context, nr string) (string, error) {
+func searchArticle(ctx context.Context, nr string) (string, string, error) {
 
 	client := urlfetch.Client(ctx)
 
@@ -52,13 +52,13 @@ func searchArticle(ctx context.Context, nr string) (string, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 
-	return string(body), err
+	return string(body), url.String(), err
 }
 
 func getImageUrl(body string) (string, error) {
@@ -67,6 +67,9 @@ func getImageUrl(body string) (string, error) {
 	if len(imgUrlMatch) < 2 || imgUrlMatch[1] == "" {
 		return "", errors.New("no image-url found")
 	}
+
+	//imgUrl := customizeImgUrl(imgUrlMatch[1])
+
 	return imgUrlMatch[1], nil
 }
 
@@ -87,7 +90,7 @@ func getName(body string) (string, error) {
 	}
 
 	// TODO: dirty hacks
-	name := strings.Replace(nameMatch[1], "&quot;", `"`, -1)
+	name := strings.Replace(nameMatch[1], "&quot;", `'`, -1)
 	name = strings.Replace(name, "&amp;", "&", -1)
 	name = strings.Replace(name, "ä", "ae", -1)
 	name = strings.Replace(name, "ö", "oe", -1)
@@ -97,6 +100,20 @@ func getName(body string) (string, error) {
 	name = strings.Replace(name, "»", "'", -1)
 	name = strings.Replace(name, "™", "", -1)
 	name = strings.Replace(name, "®", "", -1)
+	name = strings.Replace(name, "inkl.", "inklusive", -1)
+	name = strings.Replace(name, "einschl.", "einschliesslich", -1)
+	name = strings.Replace(name, "tlg.", "teilig", -1)
 
 	return name, nil
+}
+
+//may be slow
+func customizeImgUrl(url string) string {
+
+	const prefix = "https://i.otto.de/i/otto/"
+	const postfix = "?h=520&amp;w=384&amp;sm=clamp"
+
+	split := strings.Split(url, "/")
+
+	return prefix + split[5] + postfix
 }

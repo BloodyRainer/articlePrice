@@ -11,6 +11,7 @@ type Guess struct {
 	ActualPrice float64 `json:"actualPrice"`
 	PriceGuess  float64 `json:"number"`
 	OrgNumber   string  `json:"number.original"`
+	Link        string  `json:"link"`
 }
 
 func MakeGuessFromDfRequest(dfReq DfRequest) (Guess, error) {

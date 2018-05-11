@@ -27,7 +27,7 @@ func GetRandomArticle(ctx context.Context) (*model.Article, error) {
 }
 
 func requestArticleByArticleNr(ctx context.Context, articleNr string) (*model.Article, error) {
-	respBody, err := searchArticle(ctx, articleNr)
+	respBody, url, err := searchArticle(ctx, articleNr)
 	if err != nil {
 		return nil, err
 	}
@@ -38,6 +38,7 @@ func requestArticleByArticleNr(ctx context.Context, articleNr string) (*model.Ar
 	}
 
 	a.ArticleNr = articleNr
+	a.Link = url
 
 	return a, nil
 }

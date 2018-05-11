@@ -44,19 +44,21 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	engLog.Infof(ctx, "intent-name is: "+intent)
 
 	if intent == "start_guess" {
-		dfRes, err = askQuestion(ctx, dfReq)
+		dfRes, err = askRandomArticle(ctx, dfReq)
 		if err != nil {
+			engLog.Errorf(ctx, err.Error())
 			http.Error(w, err.Error(), 500)
 			return
 		}
 	} else if intent == "say_price" {
-		dfRes, err = evaluateAnswer(ctx, *dfReq)
+		dfRes, err = respondToPriceGuess(ctx, *dfReq)
 		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
+			engLog.Warningf(ctx, "failed to evaluate input" + err.Error())
+
+			dfRes = askForNewInput()
 		}
 	} else {
-		//TODO: default response
+		// should not happen...
 	}
 
 	w.Header().Add("Content-Type", "application/json")
@@ -66,7 +68,7 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func askQuestion(ctx context.Context, dfReq *dialogflow.DfRequest) (*dialogflow.DfResponse, error) {
+func askRandomArticle(ctx context.Context, dfReq *dialogflow.DfRequest) (*dialogflow.DfResponse, error) {
 	a, err := search.GetRandomArticle(ctx)
 
 	engLog.Infof(ctx, "random article: " + a.String())
@@ -74,10 +76,17 @@ func askQuestion(ctx context.Context, dfReq *dialogflow.DfRequest) (*dialogflow.
 	if err != nil {
 		return nil, err
 	}
-	return dialogflow.MakeArticleNameResponse(*a, *dfReq), nil
+
+	resp := dialogflow.MakeArticleNameResponse(ctx, *a, *dfReq)
+
+	return resp, nil
 }
 
-func evaluateAnswer(ctx context.Context, dfReq dialogflow.DfRequest) (*dialogflow.DfResponse, error) {
+func askForNewInput() *dialogflow.DfResponse {
+	return dialogflow.MakeNewInputResponse()
+}
+
+func respondToPriceGuess(ctx context.Context, dfReq dialogflow.DfRequest) (*dialogflow.DfResponse, error) {
 
 	g, err := dialogflow.MakeGuessFromDfRequest(dfReq)
 	if err != nil {
