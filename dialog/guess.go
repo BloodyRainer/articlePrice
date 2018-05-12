@@ -1,4 +1,4 @@
-package dialogflow
+package dialog
 
 import (
 	"strings"

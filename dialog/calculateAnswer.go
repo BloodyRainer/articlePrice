@@ -1,4 +1,4 @@
-package dialogflow
+package dialog
 
 import (
 	"github.com/BloodyRainer/articlePrice/model"
@@ -112,18 +112,19 @@ func calculateResponse(g Guess) (string, string) {
 	if diffPercent > t {
 		return "<speak> Zu hoch! <break time='500ms'/> Der Artikel kostet in Wirklichkeit nur " + ap + " Euro. </speak>",
 			"Zu hoch, der Artikel kostet in Wirklichkeit nur " + ap + " Euro. "
-	} else if diffPercent < -t * 10 {
+	} else if diffPercent < -t*10 {
 		return "<speak> Ja ganz genau! <break time='500ms'/> Du kannst den Artikel fuer " + gp +
-			" Euro sofort in dem Paketshop direkt auf dem Zucker Berg im Schokoladenviertel in der Wuensch Dir Was Allee abholen! " +
-			"<break time='1500ms'/> Nein, der echte Preis ist " + ap + " Euro. </speak>",
+			" Euro sofort in dem Paketshop direkt im Schokoladenviertel auf dem Zucker Berg in der Wuensch Dir Was Allee abholen! " +
+			"<audio src='https://actions.google.com/sounds/v1/cartoon/drum_roll.ogg' clipEnd='4s'></audio> <break time='700ms'/> Nein, " +
+			"der echte Preis ist natuerlich " + ap + " Euro. </speak>",
 			"Ja ganz genau, du kannst den Artikel fuer " + gp +
-				" Euro sofort in dem Paketshop direkt auf dem Zuckerberg im Schokoladenviertel in der Wuensch-Dir-Was-Allee abholen!" +
-				" Nein, der echte Preis ist " + ap + " Euro. "
+				" Euro sofort in dem Paketshop direkt im Schokoladenviertel auf dem Zuckerberg in der Wuensch-Dir-Was-Allee abholen!" +
+				" Nein, der echte Preis ist natuerlich " + ap + " Euro. "
 	} else if diffPercent < -t {
 		return "<speak> Zu tief! <break time='500ms'/> Der Artikel kostet in Wirklichkeit " + ap + " Euro. </speak>",
 			"Zu tief, der Artikel kostet in Wirklichkeit " + ap + " Euro. "
 	} else {
-		return "<speak> Gut geraten! <break time='500ms'/> Der Artikel kostet tatsaechlich " + ap + " Euro. </speak>",
+		return "<speak> <audio src='https://firebasestorage.googleapis.com/v0/b/whatisit-72c26.appspot.com/o/success.mp3?alt=media'></audio> Gut geraten! <break time='500ms'/> Der Artikel kostet tatsaechlich " + ap + " Euro. </speak>",
 			"Gut geraten, der Artikel kostet tatsaechlich " + ap + " Euro."
 	}
 
@@ -132,7 +133,7 @@ func calculateResponse(g Guess) (string, string) {
 func calculateDiffPercentTreshold(g Guess) float64 {
 	if g.ActualPrice < 10.00 {
 		return 20.00
-	} else if g.ActualPrice < 30.00{
+	} else if g.ActualPrice < 30.00 {
 		return 15.00
 	} else {
 		return 7.00

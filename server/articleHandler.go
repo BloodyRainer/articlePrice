@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"github.com/BloodyRainer/articlePrice/search"
 	engLog "google.golang.org/appengine/log"
-	"github.com/BloodyRainer/articlePrice/dialogflow"
+	"github.com/BloodyRainer/articlePrice/dialog"
 	"io/ioutil"
 	"context"
 	"errors"
@@ -17,8 +17,8 @@ type articleHandler struct{}
 
 func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	var dfReq *dialogflow.DfRequest
-	var dfRes *dialogflow.DfResponse
+	var dfReq *dialog.DfRequest
+	var dfRes *dialog.DfResponse
 	var err error
 
 	ctx := appengine.NewContext(r)
@@ -33,7 +33,7 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		logPostBody(ctx, body)
 
-		dfReq, err = dialogflow.MakeDfRequest(body)
+		dfReq, err = dialog.MakeDfRequest(body)
 		if err != nil {
 			http.Error(w, err.Error(), 400)
 			return
@@ -68,7 +68,7 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func askRandomArticle(ctx context.Context, dfReq *dialogflow.DfRequest) (*dialogflow.DfResponse, error) {
+func askRandomArticle(ctx context.Context, dfReq *dialog.DfRequest) (*dialog.DfResponse, error) {
 	a, err := search.GetRandomArticle(ctx)
 
 	engLog.Infof(ctx, "random article: " + a.String())
@@ -77,18 +77,18 @@ func askRandomArticle(ctx context.Context, dfReq *dialogflow.DfRequest) (*dialog
 		return nil, err
 	}
 
-	resp := dialogflow.MakeArticleNameResponse(ctx, *a, *dfReq)
+	resp := dialog.MakeArticleNameResponse(ctx, *a, *dfReq)
 
 	return resp, nil
 }
 
-func askForNewInput() *dialogflow.DfResponse {
-	return dialogflow.MakeNewInputResponse()
+func askForNewInput() *dialog.DfResponse {
+	return dialog.MakeNewInputResponse()
 }
 
-func respondToPriceGuess(ctx context.Context, dfReq dialogflow.DfRequest) (*dialogflow.DfResponse, error) {
+func respondToPriceGuess(ctx context.Context, dfReq dialog.DfRequest) (*dialog.DfResponse, error) {
 
-	g, err := dialogflow.MakeGuessFromDfRequest(dfReq)
+	g, err := dialog.MakeGuessFromDfRequest(dfReq)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ func respondToPriceGuess(ctx context.Context, dfReq dialogflow.DfRequest) (*dial
 	engLog.Infof(ctx, "guessed price is: "+gp)
 	engLog.Infof(ctx, "actual price is: "+ap)
 
-	resp := dialogflow.MakeEvaluatedResponse(g)
+	resp := dialog.MakeEvaluatedResponse(g)
 
 	return resp, nil
 }

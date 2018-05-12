@@ -1,4 +1,4 @@
-package dialogflow
+package dialog
 
 type Status struct {
 	Code      int    `json "code"`
