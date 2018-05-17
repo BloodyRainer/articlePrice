@@ -9,7 +9,13 @@ import (
 const source = "Der Preis ist heiss"
 
 func MakeArticleNameResponse(ctx context.Context, a model.Article, dfReq DfRequest) *DfResponse {
-	params := []byte(`{"articleNumber":"` + a.ArticleNr + `", "articleName":"` + a.Name + `", "actualPrice":` + a.Price + `, "imgUrl":"` + a.ImgUrl + `", "link":"` + a.Link + `"}`)
+
+	params := MakeParameters("articleNumber", a.ArticleNr)
+	params = AppendParameter(params, "articleName", a.Name)
+	params = AppendParameter(params, "actualPrice", a.Price)
+	params = AppendParameter(params, "imgUrl", a.ImgUrl)
+	params = AppendParameter(params, "link", a.Link)
+
 	payload := MakeSimpleRespPayload(true,
 		"<speak>Wie ist der Preis von "+ModifyForTTS(a.Name)+" auf otto D E?</speak>",
 		"Wie ist der Preis von "+a.Name+" auf otto.de?")
