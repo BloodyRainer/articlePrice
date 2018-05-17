@@ -2,7 +2,6 @@ package dialog
 
 import (
 	"github.com/BloodyRainer/articlePrice/model"
-	"strconv"
 	"context"
 	englog "google.golang.org/appengine/log"
 )
@@ -12,7 +11,7 @@ const source = "Der Preis ist heiss"
 func MakeArticleNameResponse(ctx context.Context, a model.Article, dfReq DfRequest) *DfResponse {
 	params := []byte(`{"articleNumber":"` + a.ArticleNr + `", "articleName":"` + a.Name + `", "actualPrice":` + a.Price + `, "imgUrl":"` + a.ImgUrl + `", "link":"` + a.Link + `"}`)
 	payload := MakeSimpleRespPayload(true,
-		"Wie ist der Preis von "+a.Name+" auf otto D E?",
+		"<speak>Wie ist der Preis von "+ModifyForTTS(a.Name)+" auf otto D E?</speak>",
 		"Wie ist der Preis von "+a.Name+" auf otto.de?")
 
 	bc := Item{
@@ -104,28 +103,28 @@ func MakeSimpleRespPayload(expectUserResponse bool, textToSpeech string, display
 func calculateResponse(g Guess) (string, string) {
 
 	diffPercent := differenceGuessActualInPercent(g.PriceGuess, g.ActualPrice)
-	ap := strconv.FormatFloat(g.ActualPrice, 'f', 2, 64)
-	gp := strconv.FormatFloat(g.PriceGuess, 'f', 2, 64)
+	tr := calculateDiffPercentTreshold(g)
 
-	t := calculateDiffPercentTreshold(g)
-
-	if diffPercent > t {
-		return "<speak> Zu hoch! <break time='500ms'/> Der Artikel kostet in Wirklichkeit nur " + ap + " Euro. </speak>",
-			"Zu hoch, der Artikel kostet in Wirklichkeit nur " + ap + " Euro. "
-	} else if diffPercent < -t*10 {
-		return "<speak> Ja ganz genau! <break time='500ms'/> Du kannst den Artikel fuer " + gp +
-			" Euro sofort in dem Paketshop direkt im Schokoladenviertel auf dem Zucker Berg in der Wuensch Dir Was Allee abholen! " +
+	if diffPercent > tr {
+		return "<speak> Zu hoch! <break time='500ms'/> Der Artikel kostet in Wirklichkeit nur " + PriceInEuroTTS(g.ActualPrice) + ". </speak>",
+			"Zu hoch, der Artikel kostet in Wirklichkeit nur " + PriceInEuroText(g.ActualPrice) + ". "
+	} else if diffPercent < -tr*10 {
+		return "<speak> Ja ganz genau! <break time='500ms'/> Du kannst den Artikel fuer " + PriceInEuroTTS(g.PriceGuess) +
+			" sofort in dem Paketshop direkt im Schokoladenviertel auf dem Zucker Berg in der Wuensch Dir Was Allee abholen! " +
 			"<audio src='https://actions.google.com/sounds/v1/cartoon/drum_roll.ogg' clipEnd='4s'></audio> <break time='700ms'/> Nein, " +
-			"der echte Preis ist natuerlich " + ap + " Euro. </speak>",
-			"Ja ganz genau, du kannst den Artikel fuer " + gp +
-				" Euro sofort in dem Paketshop direkt im Schokoladenviertel auf dem Zuckerberg in der Wuensch-Dir-Was-Allee abholen!" +
-				" Nein, der echte Preis ist natuerlich " + ap + " Euro. "
-	} else if diffPercent < -t {
-		return "<speak> Zu tief! <break time='500ms'/> Der Artikel kostet in Wirklichkeit " + ap + " Euro. </speak>",
-			"Zu tief, der Artikel kostet in Wirklichkeit " + ap + " Euro. "
+			"der echte Preis ist natuerlich " + PriceInEuroTTS(g.ActualPrice) + ". </speak>",
+			"Ja ganz genau, du kannst den Artikel fuer " + PriceInEuroText(g.PriceGuess) +
+				" sofort in dem Paketshop direkt im Schokoladenviertel auf dem Zuckerberg in der Wuensch-Dir-Was-Allee abholen!" +
+				" Nein, der echte Preis ist natuerlich " + PriceInEuroText(g.ActualPrice) + "."
+	} else if diffPercent < -tr {
+		return "<speak> Zu tief! <break time='500ms'/> Der Artikel kostet in Wirklichkeit " + PriceInEuroTTS(g.ActualPrice) + ".</speak>",
+			"Zu tief, der Artikel kostet in Wirklichkeit " + PriceInEuroText(g.ActualPrice) + "."
+		//} else if diffPercent < tr / tr {
+		//	return "<speak> <audio src='https://firebasestorage.googleapis.com/v0/b/whatisit-72c26.appspot.com/o/success.mp3?alt=media'></audio> Das wusstest du wohl! <break time='500ms'/> Der Artikel kostet genau " + ap + " Euro. </speak>",
+		//		"Das wusstest du wohl! Der Artikel kostet genau " + ap + "."
 	} else {
-		return "<speak> <audio src='https://firebasestorage.googleapis.com/v0/b/whatisit-72c26.appspot.com/o/success.mp3?alt=media'></audio> Gut geraten! <break time='500ms'/> Der Artikel kostet tatsaechlich " + ap + " Euro. </speak>",
-			"Gut geraten, der Artikel kostet tatsaechlich " + ap + " Euro."
+		return "<speak> <audio src='https://firebasestorage.googleapis.com/v0/b/whatisit-72c26.appspot.com/o/success.mp3?alt=media'></audio> Gut geraten! <break time='500ms'/> Der Artikel kostet tatsaechlich " + PriceInEuroTTS(g.ActualPrice) + ".</speak>",
+			"Gut geraten, der Artikel kostet tatsaechlich " + PriceInEuroText(g.ActualPrice) + "."
 	}
 
 }

@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"context"
 	"errors"
-	"strconv"
 )
 
 type articleHandler struct{}
@@ -51,9 +50,9 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else if intent == "say_price" {
-		dfRes, err = respondToPriceGuess(ctx, *dfReq)
+		dfRes, err = respondToPriceGuess(*dfReq)
 		if err != nil {
-			engLog.Warningf(ctx, "failed to evaluate input" + err.Error())
+			engLog.Warningf(ctx, "failed to evaluate input"+err.Error())
 
 			dfRes = askForNewInput()
 		}
@@ -71,7 +70,7 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func askRandomArticle(ctx context.Context, dfReq *dialog.DfRequest) (*dialog.DfResponse, error) {
 	a, err := search.GetRandomArticle(ctx)
 
-	engLog.Infof(ctx, "random article: " + a.String())
+	engLog.Infof(ctx, "random article: "+a.String())
 
 	if err != nil {
 		return nil, err
@@ -86,20 +85,12 @@ func askForNewInput() *dialog.DfResponse {
 	return dialog.MakeNewInputResponse()
 }
 
-func respondToPriceGuess(ctx context.Context, dfReq dialog.DfRequest) (*dialog.DfResponse, error) {
+func respondToPriceGuess(dfReq dialog.DfRequest) (*dialog.DfResponse, error) {
 
 	g, err := dialog.MakeGuessFromDfRequest(dfReq)
 	if err != nil {
 		return nil, err
 	}
-
-	gp := strconv.FormatFloat(g.PriceGuess, 'f', 2, 64)
-	ap := strconv.FormatFloat(g.ActualPrice, 'f', 2, 64)
-
-	engLog.Infof(ctx, "articleNumber is: "+g.ArticleNr)
-	engLog.Infof(ctx, "articleName is: "+g.ArticleName)
-	engLog.Infof(ctx, "guessed price is: "+gp)
-	engLog.Infof(ctx, "actual price is: "+ap)
 
 	resp := dialog.MakeEvaluatedResponse(g)
 

@@ -1,10 +1,12 @@
 #! /bin/bash
 
 local() {
+    go test ./...
     python2 ~/google-cloud-sdk/bin/dev_appserver.py ./appeng/app.yaml
 }
 
 remote() {
+    go test ./...
     yes Y | gcloud app deploy ./appeng/app.yaml
 }
 

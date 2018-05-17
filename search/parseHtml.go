@@ -93,9 +93,13 @@ func getName(body string) (string, error) {
 	name := strings.Replace(nameMatch[1], "&quot;", `'`, -1)
 	name = strings.Replace(name, "&amp;", "&", -1)
 	name = strings.Replace(name, "ä", "ae", -1)
+	name = strings.Replace(name, "Ä", "AE", -1)
 	name = strings.Replace(name, "ö", "oe", -1)
+	name = strings.Replace(name, "Ö", "OE", -1)
 	name = strings.Replace(name, "ü", "ue", -1)
+	name = strings.Replace(name, "Ü", "UE", -1)
 	name = strings.Replace(name, "ß", "ss", -1)
+	name = strings.Replace(name, "é", "e", -1)
 	name = strings.Replace(name, "«", "'", -1)
 	name = strings.Replace(name, "»", "'", -1)
 	name = strings.Replace(name, "™", "", -1)
@@ -107,7 +111,7 @@ func getName(body string) (string, error) {
 	return name, nil
 }
 
-//may be slow
+//may be slow, currently not used
 func customizeImgUrl(url string) string {
 
 	const prefix = "https://i.otto.de/i/otto/"
