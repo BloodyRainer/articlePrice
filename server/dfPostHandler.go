@@ -57,7 +57,7 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			dfRes = intentHandlers.AskForNewInput()
 		}
 	} else if intent == "say_name_player_one" {
-		dfRes, err = intentHandlers.RespondToNamePlayerOne(ctx, *dfReq)
+		dfRes, err = intentHandlers.RespondToNamePlayerOne(*dfReq)
 		if err != nil {
 			engLog.Errorf(ctx, "failed to answer to name of player one: "+err.Error())
 			http.Error(w, err.Error(), 500)
@@ -67,9 +67,6 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		engLog.Errorf(ctx, "unknown intent: "+intent)
 		return
 	}
-
-	engLog.Infof(ctx, "test3")
-	engLog.Infof(ctx, dfRes.Payload.Google.RichResponse.Items[0].SimpleResponse.DisplayText)
 
 	// respond to dialogflow
 	w.Header().Add("Content-Type", "application/json")

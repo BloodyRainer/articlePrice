@@ -38,7 +38,3 @@ func makeGuessFromContextParameters(parameters []byte) (Guess, error) {
 	return g, err
 }
 
-//func (rcv Guess) getActualPriceAsFloat64() (float64, error) {
-//	ap, err := strconv.ParseFloat(rcv.ActualPrice, 64)
-//
-//}

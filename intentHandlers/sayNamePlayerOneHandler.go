@@ -2,13 +2,9 @@ package intentHandlers
 
 import (
 	"github.com/BloodyRainer/articlePrice/df"
-	"context"
-	engLog "google.golang.org/appengine/log"
 )
 
-func RespondToNamePlayerOne(ctx context.Context, dfReq df.Request) (*df.Response, error) {
-
-	engLog.Infof(ctx, "test0")
+func RespondToNamePlayerOne(dfReq df.Request) (*df.Response, error) {
 
 	nameP1 := dfReq.QueryResult.QueryText
 
@@ -20,8 +16,6 @@ func RespondToNamePlayerOne(ctx context.Context, dfReq df.Request) (*df.Response
 		"<speak>Ok, danke "+nameP1+"! Wie ist der Name von Spieler Nummer 2?</speak>",
 		"Ok, danke "+nameP1+"! Wie ist der Name von Spieler 2?")
 
-	engLog.Infof(ctx, "test1")
-
 	resp := &df.Response{
 		Source:  source,
 		Payload: payload,
@@ -30,8 +24,6 @@ func RespondToNamePlayerOne(ctx context.Context, dfReq df.Request) (*df.Response
 			df.MakeOutputContext("name_player_two", 3, nil, dfReq),
 		},
 	}
-
-	engLog.Infof(ctx, "test2")
 
 	return resp, nil
 
