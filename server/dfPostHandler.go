@@ -3,20 +3,21 @@ package server
 import (
 	"google.golang.org/appengine"
 	"net/http"
-	"encoding/json"
 	engLog "google.golang.org/appengine/log"
-	"github.com/BloodyRainer/articlePrice/dialog"
+	"github.com/BloodyRainer/articlePrice/df"
 	"io/ioutil"
 	"context"
 	"errors"
+	"github.com/BloodyRainer/articlePrice/intentHandlers"
+	"encoding/json"
 )
 
 type articleHandler struct{}
 
 func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	var dfReq *dialog.DfRequest
-	var dfRes *dialog.DfResponse
+	var dfReq *df.Request
+	var dfRes *df.Response
 	var err error
 
 	ctx := appengine.NewContext(r)
@@ -31,7 +32,7 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		logPostBody(ctx, body)
 
-		dfReq, err = dialog.MakeDfRequest(body)
+		dfReq, err = df.MakeDfRequest(body)
 		if err != nil {
 			http.Error(w, err.Error(), 400)
 			return
@@ -43,22 +44,32 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	engLog.Infof(ctx, "intent-name is: "+intent)
 
 	if intent == "start_guess" {
-		dfRes, err = askRandomArticle(ctx, dfReq)
+		dfRes, err = intentHandlers.AskRandomArticle(ctx, dfReq)
 		if err != nil {
-			engLog.Errorf(ctx, err.Error())
+			engLog.Errorf(ctx, "failed to ask random article"+err.Error())
 			http.Error(w, err.Error(), 500)
 			return
 		}
 	} else if intent == "say_price" {
-		dfRes, err = respondToPriceGuess(*dfReq)
+		dfRes, err = intentHandlers.RespondToPriceGuess(*dfReq)
 		if err != nil {
-			engLog.Warningf(ctx, "failed to evaluate input"+err.Error())
-
-			dfRes = askForNewInput()
+			engLog.Warningf(ctx, "failed to evaluate input: "+err.Error())
+			dfRes = intentHandlers.AskForNewInput()
+		}
+	} else if intent == "say_name_player_one" {
+		dfRes, err = intentHandlers.RespondToNamePlayerOne(ctx, *dfReq)
+		if err != nil {
+			engLog.Errorf(ctx, "failed to answer to name of player one: "+err.Error())
+			http.Error(w, err.Error(), 500)
+			return
 		}
 	} else {
-		engLog.Errorf(ctx, "unknown intend")
+		engLog.Errorf(ctx, "unknown intent: "+intent)
+		return
 	}
+
+	engLog.Infof(ctx, "test3")
+	engLog.Infof(ctx, dfRes.Payload.Google.RichResponse.Items[0].SimpleResponse.DisplayText)
 
 	// respond to dialogflow
 	w.Header().Add("Content-Type", "application/json")

@@ -1,13 +1,13 @@
-package dialog
+package df
 
 import (
 	"encoding/json"
 	"errors"
 )
 
-func MakeDfRequest(body []byte) (*DfRequest, error) {
+func MakeDfRequest(body []byte) (*Request, error) {
 
-	var dfRequest DfRequest
+	var dfRequest Request
 
 	err := json.Unmarshal(body, &dfRequest)
 	if err != nil {
@@ -17,7 +17,7 @@ func MakeDfRequest(body []byte) (*DfRequest, error) {
 	return &dfRequest, nil
 }
 
-type DfRequest struct {
+type Request struct {
 	ResponseId                  string                 `json:"responseId,omitempty"`
 	Session                     string                 `json:"session,omitempty"`
 	QueryResult                 *QueryResult           `json:"queryResult,omitempty"`

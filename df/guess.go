@@ -1,4 +1,4 @@
-package dialog
+package df
 
 import (
 	"strings"
@@ -14,7 +14,7 @@ type Guess struct {
 	Link        string  `json:"link"`
 }
 
-func MakeGuessFromDfRequest(dfReq DfRequest) (Guess, error) {
+func MakeGuessFromDfRequest(dfReq Request) (Guess, error) {
 
 	contexts := dfReq.QueryResult.OutputContexts
 
@@ -30,7 +30,7 @@ func MakeGuessFromDfRequest(dfReq DfRequest) (Guess, error) {
 
 }
 
-func makeGuessFromContextParameters(parameters json.RawMessage) (Guess, error) {
+func makeGuessFromContextParameters(parameters []byte) (Guess, error) {
 	g := Guess{}
 
 	err := json.Unmarshal(parameters, &g)

@@ -1,10 +1,10 @@
-package dialog
+package df
 
 import (
 	"encoding/json"
 )
 
-type DfResponse struct {
+type Response struct {
 	FulfillmentText     string      `json:"fulfillmentText,omitempty"`
 	FulfillmentMessages []Message   `json:"fulfillmentMessages,omitempty"`
 	Source              string      `json:"source,omitempty"`

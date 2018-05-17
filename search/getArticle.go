@@ -5,6 +5,7 @@ import (
 	"context"
 	engLog "google.golang.org/appengine/log"
 	"sync"
+	"github.com/BloodyRainer/articlePrice/df"
 )
 
 const domain = "www.otto.de"
@@ -13,7 +14,7 @@ const protocol = "https"
 const queryPrefix = "articlenumber="
 
 // Appengine needs the original request.
-func GetRandomArticle(ctx context.Context) (*model.Article, error) {
+func GetRandomArticle(ctx context.Context) (*df.Article, error) {
 	aNr := model.RandomArticleNr()
 
 	a, err := requestArticleByArticleNr(ctx, aNr)
@@ -26,7 +27,7 @@ func GetRandomArticle(ctx context.Context) (*model.Article, error) {
 	return a, nil
 }
 
-func requestArticleByArticleNr(ctx context.Context, articleNr string) (*model.Article, error) {
+func requestArticleByArticleNr(ctx context.Context, articleNr string) (*df.Article, error) {
 	respBody, url, err := searchArticle(ctx, articleNr)
 	if err != nil {
 		return nil, err
@@ -43,7 +44,7 @@ func requestArticleByArticleNr(ctx context.Context, articleNr string) (*model.Ar
 	return a, nil
 }
 
-func createArticleFromHtml(ctx context.Context, html string) (*model.Article, error) {
+func createArticleFromHtml(ctx context.Context, html string) (*df.Article, error) {
 
 	var err error
 	var name string
@@ -84,7 +85,7 @@ func createArticleFromHtml(ctx context.Context, html string) (*model.Article, er
 		return nil, err
 	}
 
-	a := &model.Article{
+	a := &df.Article{
 		Name:   name,
 		Price:  price,
 		ImgUrl: imgUrl,

@@ -1,4 +1,4 @@
-package dialog
+package df
 
 import (
 	"strings"
@@ -92,6 +92,34 @@ func concatenate(words []string) string {
 	}
 
 	return buffer.String()
+}
+
+func MakeOutputContext(name string, lifespan int, parameters []byte, dfReq Request) Context {
+
+	return Context{
+		Name:          dfReq.Session + "/contexts/" + name,
+		LifespanCount: lifespan,
+		Parameters:    parameters,
+	}
+}
+
+
+func MakeSimpleRespPayload(expectUserResponse bool, textToSpeech string, displayText string) *Payload {
+	return &Payload{
+		Google: &Google{
+			ExpectUserResponse: expectUserResponse,
+			RichResponse: &RichResponse{
+				Items: []Item{
+					{
+						SimpleResponse: &SimpleResponse{
+							TextToSpeech: textToSpeech,
+							DisplayText:  displayText,
+						},
+					},
+				},
+			},
+		},
+	}
 }
 
 

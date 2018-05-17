@@ -1,4 +1,4 @@
-package dialog
+package df
 
 import "encoding/json"
 
