@@ -47,7 +47,7 @@ func ModifyForTTS(text string) string {
 	//TODO: ampersand-bug in ssml!?
 	tts = strings.Replace(tts, "&", " und ", -1)
 
-	return concatenate(words)
+	return tts
 }
 
 func convertNumbersWithSlash(words []string) {

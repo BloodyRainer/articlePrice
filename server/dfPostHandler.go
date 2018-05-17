@@ -4,7 +4,6 @@ import (
 	"google.golang.org/appengine"
 	"net/http"
 	"encoding/json"
-	"github.com/BloodyRainer/articlePrice/search"
 	engLog "google.golang.org/appengine/log"
 	"github.com/BloodyRainer/articlePrice/dialog"
 	"io/ioutil"
@@ -22,8 +21,8 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	ctx := appengine.NewContext(r)
 
+	// check and log dialogflow-post-request
 	if r.Method == http.MethodPost {
-
 		body, err := readPostBody(r)
 		if err != nil {
 			http.Error(w, err.Error(), 400)
@@ -39,6 +38,7 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// dispatch intents in order to assemble dialogflow-response
 	intent := dfReq.QueryResult.Intent.DisplayName
 	engLog.Infof(ctx, "intent-name is: "+intent)
 
@@ -57,44 +57,14 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			dfRes = askForNewInput()
 		}
 	} else {
-		// should not happen...
+		engLog.Errorf(ctx, "unknown intend")
 	}
 
+	// respond to dialogflow
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
 	json.NewEncoder(w).Encode(dfRes)
-
-}
-
-func askRandomArticle(ctx context.Context, dfReq *dialog.DfRequest) (*dialog.DfResponse, error) {
-	a, err := search.GetRandomArticle(ctx)
-
-	engLog.Infof(ctx, "random article: "+a.String())
-
-	if err != nil {
-		return nil, err
-	}
-
-	resp := dialog.MakeArticleNameResponse(ctx, *a, *dfReq)
-
-	return resp, nil
-}
-
-func askForNewInput() *dialog.DfResponse {
-	return dialog.MakeNewInputResponse()
-}
-
-func respondToPriceGuess(dfReq dialog.DfRequest) (*dialog.DfResponse, error) {
-
-	g, err := dialog.MakeGuessFromDfRequest(dfReq)
-	if err != nil {
-		return nil, err
-	}
-
-	resp := dialog.MakeEvaluatedResponse(g)
-
-	return resp, nil
 }
 
 func readPostBody(r *http.Request) ([]byte, error) {
