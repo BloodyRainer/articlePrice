@@ -69,7 +69,7 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// respond to dialogflow
-	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 
 	json.NewEncoder(w).Encode(dfRes)

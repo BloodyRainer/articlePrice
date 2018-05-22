@@ -46,6 +46,16 @@ func ModifyForTTS(text string) string {
 
 	//TODO: ampersand-bug in ssml!?
 	tts = strings.Replace(tts, "&", " und ", -1)
+	tts = strings.Replace(tts, "inkl.", "inklusive", -1)
+	tts = strings.Replace(tts, "einschl.", "einschließlich", -1)
+	tts = strings.Replace(tts, "tlg.", "teilig", -1)
+	tts = strings.Replace(tts, " St ", " Stück ", -1)
+	tts = strings.Replace(tts, "U/Min", "Umdrehungen pro Minute", -1)
+	tts = strings.Replace(tts, "U/min", "Umdrehungen pro Minute", -1)
+	tts = strings.Replace(tts, "«", "'", -1)
+	tts = strings.Replace(tts, "»", "'", -1)
+	tts = strings.Replace(tts, "™", "", -1)
+	tts = strings.Replace(tts, "®", "", -1)
 
 	return tts
 }
