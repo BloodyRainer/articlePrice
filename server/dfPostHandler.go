@@ -43,27 +43,46 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	intent := dfReq.QueryResult.Intent.DisplayName
 	engLog.Infof(ctx, "intent-name is: "+intent)
 
-	if intent == "start_guess" {
+	switch intent {
+	case "start_guess":
 		dfRes, err = intentHandlers.AskRandomArticle(ctx, dfReq)
 		if err != nil {
-			engLog.Errorf(ctx, "failed to ask random article"+err.Error())
+			engLog.Errorf(ctx, "failed to ask random article: "+err.Error())
 			http.Error(w, err.Error(), 500)
 			return
 		}
-	} else if intent == "say_price" {
+	case "say_price":
 		dfRes, err = intentHandlers.RespondToPriceGuess(*dfReq)
 		if err != nil {
 			engLog.Warningf(ctx, "failed to evaluate input: "+err.Error())
 			dfRes = intentHandlers.AskForNewInput()
 		}
-	} else if intent == "say_name_player_one" {
+
+	// two-player mode intents
+	case "say_name_player_one":
 		dfRes, err = intentHandlers.RespondToNamePlayerOne(*dfReq)
 		if err != nil {
 			engLog.Errorf(ctx, "failed to answer to name of player one: "+err.Error())
 			http.Error(w, err.Error(), 500)
 			return
 		}
-	} else {
+	case "say_name_player_two":
+		dfRes, err = intentHandlers.RespondToNamePlayerTwo(*dfReq)
+		if err != nil {
+			engLog.Errorf(ctx, "failed to answer to name of player one: "+err.Error())
+			http.Error(w, err.Error(), 500)
+			return
+		}
+	case "quiz_ask_question_firstPlayer":
+		dfRes, err = intentHandlers.AskArticleQuestionFirstPlayer(ctx, *dfReq)
+		if err != nil {
+			engLog.Errorf(ctx, "failed to ask random article: "+err.Error())
+			http.Error(w, err.Error(), 500)
+			return
+		}
+	case "quiz_answer_firstPlayer":
+		//TODO:
+	default:
 		engLog.Errorf(ctx, "unknown intent: "+intent)
 		return
 	}

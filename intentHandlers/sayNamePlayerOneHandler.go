@@ -10,11 +10,14 @@ func RespondToNamePlayerOne(dfReq df.Request) (*df.Response, error) {
 
 	gs := df.GameSession{
 		NamePlayerOne: nameP1,
+		Turn: 1,
+		PricesPlayerOne: []float64{0.00},
+		PricesPlayerTwo: []float64{0.00},
 	}
 
 	payload := df.MakeSimpleRespPayload(true,
-		"<speak>Ok, danke "+nameP1+"! Wie ist der Name von Spieler Nummer 2?</speak>",
-		"Ok, danke "+nameP1+"! Wie ist der Name von Spieler 2?")
+		"<speak>Ok, der Name von Spieler <say-as interpret-as='cardinal'>1</say-as> ist "+nameP1+"! Wie ist der Name von Spieler 2?</speak>",
+		"Ok, der Name von Spieler 1 ist "+nameP1+"! Wie ist der Name von Spieler 2?")
 
 	resp := &df.Response{
 		Source:  source,

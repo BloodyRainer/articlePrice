@@ -6,6 +6,7 @@ import (
 	"strconv"
 )
 
+// First parameter has to be a string
 func MakeParameters(key string, value string) []byte{
 	return []byte(`{"` + key + `":"` + value + `"}`)
 }
@@ -20,6 +21,10 @@ func AppendParameter(params []byte, key string, value string) []byte {
 	sb.WriteString(key)
 
 	if _, err := strconv.ParseFloat(value, 64); err == nil {
+		sb.WriteString(`":`)
+		sb.WriteString(value)
+		sb.WriteString(`}`)
+	} else if strings.HasPrefix(value, "[") {
 		sb.WriteString(`":`)
 		sb.WriteString(value)
 		sb.WriteString(`}`)

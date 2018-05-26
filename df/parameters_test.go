@@ -34,3 +34,11 @@ func TestAppendParameter3(t *testing.T) {
 
 	assert.Equal(t, `{"name":"thai", "friends":2}`, string(new))
 }
+
+func TestAppendParameter4(t *testing.T) {
+	ps := MakeParameters("name", "test")
+
+	new := AppendParameter(ps, "list", "[0.12, 12.99]")
+
+	assert.Equal(t, `{"name":"test", "list":[0.12, 12.99]}`, string(new))
+}
