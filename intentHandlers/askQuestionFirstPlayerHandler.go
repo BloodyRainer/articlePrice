@@ -22,22 +22,29 @@ func AskArticleQuestionFirstPlayer(ctx context.Context, dfReq df.Request) (*df.R
 
 	engLog.Infof(ctx, "asking random article: "+a.String())
 
+	gs.IncrementTrun()
+	engLog.Infof(ctx, "current turn: %v ", gs.Turn)
+
 	gs.CurrentArticleName = a.Name
-	gs.CurrentArticlePrice = a.Price
 	gs.CurrentArticleNumber = a.ArticleNr
+	gs.CurrentArticlePrice, err = strconv.ParseFloat(a.Price, 64)
+	gs.CurrentArticleImgUrl = a.ImgUrl
+	if err != nil {
+		return nil, err
+	}
 
 	resp := makeArticleQuestionFirstPlayer(dfReq, gs)
 
 	return resp, nil
 }
 
-func makeArticleQuestionFirstPlayer(dfReq df.Request, gs df.GameSession) *df.Response {
+func makeArticleQuestionFirstPlayer(dfReq df.Request, gs *df.GameSession) *df.Response {
 
 	points := strconv.Itoa(int(gs.GetPointsOfCurrentTurn()))
-	pName := gs.GetCurrentTurnFirstPlayerName()
+	pName := gs.GetFirstPlayerName()
 
 	payload := df.MakeSimpleRespPayload(true,
-		"<speak>Wie ist der Preis von "+df.ModifyForTTS(gs.CurrentArticleName)+" auf otto D E? " + pName+", du bist dran, für "+ points +" Punkte, wie ist dein Tipp?</speak>",
+		"<speak>Wie ist der Preis von "+df.ModifyForTTS(gs.CurrentArticleName)+" auf otto D E? <break time='2000ms'/> " + pName+", du bist dran, für "+ points +" Punkte, wie ist dein Tipp?</speak>",
 		"Wie ist der Preis von "+gs.CurrentArticleName+" auf otto.de? " + pName+", du bist dran, für "+ points +" Punkte, wie ist dein Tipp?")
 
 	bc := df.Item{

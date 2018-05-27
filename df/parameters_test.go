@@ -14,7 +14,7 @@ func TestMakeParameters(t *testing.T) {
 func TestAppendParameter1(t *testing.T) {
 	ps := MakeParameters("name", "thai")
 
-	new := AppendParameter(ps, "friend", "rainer")
+	new := AppendString(ps, "friend", "rainer")
 
 	assert.Equal(t, `{"name":"thai", "friend":"rainer"}`, string(new))
 }
@@ -22,7 +22,7 @@ func TestAppendParameter1(t *testing.T) {
 func TestAppendParameter2(t *testing.T) {
 	ps := MakeParameters("name", "thai")
 
-	new := AppendParameter(ps, "friends", "2.00")
+	new := AppendNonString(ps, "friends", "2.00")
 
 	assert.Equal(t, `{"name":"thai", "friends":2.00}`, string(new))
 }
@@ -30,7 +30,7 @@ func TestAppendParameter2(t *testing.T) {
 func TestAppendParameter3(t *testing.T) {
 	ps := MakeParameters("name", "thai")
 
-	new := AppendParameter(ps, "friends", "2")
+	new := AppendNonString(ps, "friends", "2")
 
 	assert.Equal(t, `{"name":"thai", "friends":2}`, string(new))
 }
@@ -38,7 +38,7 @@ func TestAppendParameter3(t *testing.T) {
 func TestAppendParameter4(t *testing.T) {
 	ps := MakeParameters("name", "test")
 
-	new := AppendParameter(ps, "list", "[0.12, 12.99]")
+	new := AppendNonString(ps, "list", "[0.12, 12.99]")
 
 	assert.Equal(t, `{"name":"test", "list":[0.12, 12.99]}`, string(new))
 }

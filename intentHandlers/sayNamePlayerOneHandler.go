@@ -10,7 +10,7 @@ func RespondToNamePlayerOne(dfReq df.Request) (*df.Response, error) {
 
 	gs := df.GameSession{
 		NamePlayerOne: nameP1,
-		Turn: 1,
+		Turn: 0,
 		PricesPlayerOne: []float64{0.00},
 		PricesPlayerTwo: []float64{0.00},
 	}

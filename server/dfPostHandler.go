@@ -81,7 +81,19 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "quiz_answer_firstPlayer":
-		//TODO:
+		dfRes, err = intentHandlers.SavePriceFristPlayerAskSecondPlayer(ctx, *dfReq)
+		if err != nil {
+			engLog.Errorf(ctx, "failed to process price answer of first player: "+err.Error())
+			http.Error(w, err.Error(), 500)
+			return
+		}
+	case "quiz_answer_secondPlayer":
+		dfRes, err = intentHandlers.SavePriceSecondPlayerAndResultsOfTurn(ctx, *dfReq)
+		if err != nil {
+			engLog.Errorf(ctx, "failed to process price answer of second player: "+err.Error())
+			http.Error(w, err.Error(), 500)
+			return
+		}
 	default:
 		engLog.Errorf(ctx, "unknown intent: "+intent)
 		return
