@@ -8,7 +8,7 @@ import (
 	"context"
 )
 
-const endingTurn = 3
+const endingTurn = 4
 
 func SavePriceSecondPlayerAndResultsOfTurn(ctx context.Context, dfReq df.Request) (*df.Response, error) {
 
@@ -38,13 +38,19 @@ func makeResultsCurrentTurn(ctx context.Context, dfReq df.Request, gs *df.GameSe
 
 	tts, text := generateTTSAndTextAnswer(gs)
 
-	if turn > endingTurn-1 {
+	if turn == endingTurn {
 		appendFinalResult(&tts, &text, gs)
 		lifeSpanGs = 0
 		lifeSpanAfp = 0
+	} else if turn == endingTurn -2 {
+		tts.WriteString(" <break time='2000ms'/> Es folgt die vorletzte Runde! <break time='1000ms'/>Seid ihr bereit?</speak>")
+		text.WriteString("\n\nEs folgt die vorletzte Runde, seid ihr bereit?")
+	} else if turn == endingTurn -1 {
+		tts.WriteString(" <break time='2000ms'/> Es folgt die letzte Runde, <break time='300ms'/> also strengt euch noch mal an! <break time='1000ms'/>Seid ihr bereit?</speak>")
+		text.WriteString("\n\nEs folgt die letzte Runde, also strengt euch noch mal an! Seid ihr bereit?")
 	} else {
 		tts.WriteString(" <break time='2000ms'/> Bereit für die nächste Runde?</speak>")
-		text.WriteString(" Bereit für die nächste Runde?")
+		text.WriteString("\n\nBereit für die nächste Runde?")
 	}
 
 	// reset article for next turn
@@ -84,7 +90,7 @@ func appendSuggestion(p *df.Payload, turn float64) {
 	} else {
 		suggestions = []df.Suggestion{
 			{
-				Title: "bereit",
+				Title: "ja",
 			},
 		}
 	}
@@ -97,17 +103,18 @@ func appendFinalResult(tts, text *bytes.Buffer, gs *df.GameSession) {
 
 	if wp != lp {
 
-		tts.WriteString("<break time='2000ms'/> Die letzte Runde ist abgeschlossen.")
+		tts.WriteString("<break time='2000ms'/> Die letzte Runde ist abgeschlossen. <break time='1000ms'/>")
 		tts.WriteString(l)
 		tts.WriteString(" hat insgesamt <say-as interpret-as='cardinal'>")
 		tts.WriteString(lp)
-		tts.WriteString("</say-as> Punkte gesammelt. ")
+		tts.WriteString("</say-as> Punkte gesammelt. <break time='1000ms'/>")
 		tts.WriteString(w)
 		tts.WriteString(" kommt hingegen auf <say-as interpret-as='cardinal'>")
 		tts.WriteString(wp)
-		tts.WriteString("</say-as>  Punkte und hat dieses mal gewonnen! Gut gespielt! </speak>")
+		tts.WriteString("</say-as>  Punkte und hat dieses mal gewonnen! <break time='500ms'/> Gut gespielt! </speak>")
 
-		text.WriteString("\n\nDie letzte Runde ist abgeschlossen.")
+		text.WriteString("\n \n")
+		text.WriteString("Die letzte Runde ist abgeschlossen. ")
 		text.WriteString(l)
 		text.WriteString(" hat insgesamt ")
 		text.WriteString(lp)
@@ -115,10 +122,10 @@ func appendFinalResult(tts, text *bytes.Buffer, gs *df.GameSession) {
 		text.WriteString(w)
 		text.WriteString(" kommt hingegen auf ")
 		text.WriteString(wp)
-		text.WriteString(" Punkte und hat diese mal gewonnen! Gut gespielt!")
+		text.WriteString(" Punkte und hat dieses mal gewonnen! \n \nGut gespielt!")
 
 	} else {
-		tts.WriteString("<break time='2000ms'/> Die letzte Runde ist abgeschlossen.")
+		tts.WriteString("<break time='2000ms'/> Die letzte Runde ist abgeschlossen. ")
 		tts.WriteString("Beide Spieler kommen insgesamt auf ")
 		tts.WriteString(wp)
 		tts.WriteString(" Punkte. Damit endet das Spiel mit einem Unentschieden! Gut gespielt! </speak>")
@@ -126,7 +133,7 @@ func appendFinalResult(tts, text *bytes.Buffer, gs *df.GameSession) {
 		text.WriteString("\n\nDie letzte Runde ist abgeschlossen. ")
 		text.WriteString("Beide Spieler kommen insgesamt auf ")
 		text.WriteString(wp)
-		text.WriteString(" Punkte. Damit endet das Spiel mit einem Unentschieden! Gut gespielt!")
+		text.WriteString(" Punkte. \nDamit endet das Spiel mit einem Unentschieden! \n\nGut gespielt!")
 	}
 }
 
@@ -137,6 +144,7 @@ func generateTTSAndTextAnswer(gs *df.GameSession) (bytes.Buffer, bytes.Buffer) {
 
 	if wp != lp {
 		tts.WriteString("<speak>")
+		tts.WriteString("<audio src='https://firebasestorage.googleapis.com/v0/b/whatisit-72c26.appspot.com/o/success.mp3?alt=media'></audio>")
 		tts.WriteString(w)
 		tts.WriteString(" lag näher am tatsächlichen Preis von ")
 		tts.WriteString(df.PriceInEuroTTS(gs.CurrentArticlePrice))
@@ -146,7 +154,7 @@ func generateTTSAndTextAnswer(gs *df.GameSession) (bytes.Buffer, bytes.Buffer) {
 		tts.WriteString(l)
 		tts.WriteString(" erhält <say-as interpret-as='cardinal'>")
 		tts.WriteString(lp)
-		tts.WriteString("</say-as> Punkte! ")
+		tts.WriteString("</say-as> Punkte!")
 
 		text.WriteString("")
 		text.WriteString(w)
@@ -158,7 +166,7 @@ func generateTTSAndTextAnswer(gs *df.GameSession) (bytes.Buffer, bytes.Buffer) {
 		text.WriteString(l)
 		text.WriteString(" erhält ")
 		text.WriteString(lp)
-		text.WriteString(" Punkte! ")
+		text.WriteString(" Punkte!")
 
 	} else {
 		tts.WriteString("<speak>")

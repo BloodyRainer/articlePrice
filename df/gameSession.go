@@ -83,11 +83,11 @@ func (rcv GameSession) GetPointsOfCurrentTurn() float64 {
 	case 1:
 		return 10.00
 	case 2:
-		return 30.00
+		return 20.00
 	case 3:
-		return 50.00
+		return 30.00
 	case 4:
-		return 80.00
+		return 50.00
 	default:
 		return 100.00
 	}

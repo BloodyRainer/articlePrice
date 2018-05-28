@@ -19,7 +19,7 @@ func RespondToNamePlayerTwo(dfReq df.Request) (*df.Response, error) {
 
 	suggestions := []df.Suggestion{
 		{
-			Title: "bereit",
+			Title: "ja",
 		},
 	}
 

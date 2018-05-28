@@ -44,15 +44,15 @@ func makeArticleQuestionFirstPlayer(dfReq df.Request, gs *df.GameSession) *df.Re
 	pName := gs.GetFirstPlayerName()
 
 	payload := df.MakeSimpleRespPayload(true,
-		"<speak>Wie ist der Preis von "+df.ModifyForTTS(gs.CurrentArticleName)+" auf otto D E? <break time='2000ms'/> " + pName+", du bist dran, für "+ points +" Punkte, wie ist dein Tipp?</speak>",
-		"Wie ist der Preis von "+gs.CurrentArticleName+" auf otto.de? " + pName+", du bist dran, für "+ points +" Punkte, wie ist dein Tipp?")
+		"<speak>Wie ist der Preis von "+df.ModifyForTTS(gs.CurrentArticleName)+" auf otto <say-as interpret-as='characters'>DE</say-as>? <break time='2000ms'/> " + pName+", du bist dran, für "+ points +" Punkte, wie ist dein Tipp?</speak>",
+		"Wie ist der Preis von "+gs.CurrentArticleName+" auf otto.de? \n\n" + pName+", du bist dran, für "+ points +" Punkte, wie ist dein Tipp?")
 
 	bc := df.Item{
 		BasicCard: &df.BasicCard{
 			Title: gs.CurrentArticleName,
 			Image: &df.Image{
 				Url:               gs.CurrentArticleImgUrl,
-				AccessibilityText: "zu diesem Artikel konnte keine Vorschau gefunden werden",
+				AccessibilityText: "keine Vorschau gefunden",
 			},
 		},
 	}
