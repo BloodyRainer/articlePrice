@@ -25,6 +25,7 @@ func RespondToNamePlayerOne(dfReq df.Request) (*df.Response, error) {
 		OutputContexts: []df.Context{
 			df.MakeOutputContext("game_session", 5, gs.ToParameters(), dfReq),
 			df.MakeOutputContext("name_player_two", 3, nil, dfReq),
+			df.MakeOutputContext("name_player_one", 0, nil, dfReq),
 		},
 	}
 

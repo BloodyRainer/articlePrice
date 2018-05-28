@@ -5,16 +5,13 @@ import (
 	"net/http"
 	engLog "google.golang.org/appengine/log"
 	"github.com/BloodyRainer/articlePrice/df"
-	"io/ioutil"
-	"context"
-	"errors"
 	"github.com/BloodyRainer/articlePrice/intentHandlers"
 	"encoding/json"
 )
 
-type articleHandler struct{}
+type fullfilmentHandler struct{}
 
-func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (rcv *fullfilmentHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var dfReq *df.Request
 	var dfRes *df.Response
@@ -58,42 +55,6 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			dfRes = intentHandlers.AskForNewInput()
 		}
 
-	// two-player mode intents
-	case "say_name_player_one":
-		dfRes, err = intentHandlers.RespondToNamePlayerOne(*dfReq)
-		if err != nil {
-			engLog.Errorf(ctx, "failed to answer to name of player one: "+err.Error())
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	case "say_name_player_two":
-		dfRes, err = intentHandlers.RespondToNamePlayerTwo(*dfReq)
-		if err != nil {
-			engLog.Errorf(ctx, "failed to answer to name of player one: "+err.Error())
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	case "quiz_ask_question_firstPlayer":
-		dfRes, err = intentHandlers.AskArticleQuestionFirstPlayer(ctx, *dfReq)
-		if err != nil {
-			engLog.Errorf(ctx, "failed to ask random article: "+err.Error())
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	case "quiz_answer_firstPlayer":
-		dfRes, err = intentHandlers.SavePriceFristPlayerAskSecondPlayer(ctx, *dfReq)
-		if err != nil {
-			engLog.Errorf(ctx, "failed to process price answer of first player: "+err.Error())
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	case "quiz_answer_secondPlayer":
-		dfRes, err = intentHandlers.SavePriceSecondPlayerAndResultsOfTurn(ctx, *dfReq)
-		if err != nil {
-			engLog.Errorf(ctx, "failed to process price answer of second player: "+err.Error())
-			http.Error(w, err.Error(), 500)
-			return
-		}
 	default:
 		engLog.Errorf(ctx, "unknown intent: "+intent)
 		return
@@ -104,29 +65,4 @@ func (rcv *articleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	json.NewEncoder(w).Encode(dfRes)
-}
-
-func readPostBody(r *http.Request) ([]byte, error) {
-	if r.Body == nil {
-		return nil, errors.New("body of post request is nil")
-	}
-
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return nil, errors.New("unable to read body: " + err.Error())
-	}
-
-	return body, nil
-}
-
-func logPostBody(ctx context.Context, body []byte) {
-
-	bodyStr := string(body)
-
-	if bodyStr != "" {
-		engLog.Debugf(ctx, "req-body: "+bodyStr)
-	} else {
-		engLog.Debugf(ctx, "body string is empty")
-	}
-
 }

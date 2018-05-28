@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"math"
+	"errors"
 )
 
 type GameSession struct {
@@ -42,12 +43,16 @@ func MakeGameSessionFromDfRequest(dfReq Request) (*GameSession, error) {
 
 	contexts := dfReq.QueryResult.OutputContexts
 
-	var idx int
+	idx := -1
 
 	for i, c := range contexts {
 		if strings.Contains(c.Name, "game_session") {
 			idx = i
 		}
+	}
+
+	if idx == -1 {
+		return nil, errors.New("no game_session context")
 	}
 
 	return makeGameSessionFromContextParameters(contexts[idx].Parameters)
@@ -138,4 +143,16 @@ func (rcv *GameSession) GetPriceGuessOfCurrentTurnPlayerTwo() float64 {
 
 func (rcv *GameSession) IncrementTrun() {
 	rcv.Turn ++
+}
+
+func (rcv *GameSession) GetFinalResult() (w string, l string, wp string, lp string){
+	if rcv.PointsPlayerOne > rcv.PointsPlayerTwo {
+		return rcv.NamePlayerOne, rcv.NamePlayerTwo, strconv.Itoa(int(rcv.PointsPlayerOne)), strconv.Itoa(int(rcv.PointsPlayerTwo))
+	} else if rcv.PointsPlayerTwo > rcv.PointsPlayerOne {
+		return rcv.NamePlayerTwo, rcv.NamePlayerOne, strconv.Itoa(int(rcv.PointsPlayerTwo)) , strconv.Itoa(int(rcv.PointsPlayerOne))
+	} else {
+		// equal points
+		return rcv.NamePlayerOne, rcv.NamePlayerTwo, strconv.Itoa(int(rcv.PointsPlayerTwo)), strconv.Itoa(int(rcv.PointsPlayerTwo))
+	}
+
 }

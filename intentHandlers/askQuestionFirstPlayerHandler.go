@@ -65,6 +65,7 @@ func makeArticleQuestionFirstPlayer(dfReq df.Request, gs *df.GameSession) *df.Re
 		OutputContexts: []df.Context{
 			df.MakeOutputContext("first_player_answer", 3, nil, dfReq),
 			df.MakeOutputContext("game_session", 5, gs.ToParameters(), dfReq),
+			df.MakeOutputContext("ask_first_player", 0, nil, dfReq),
 		},
 	}
 

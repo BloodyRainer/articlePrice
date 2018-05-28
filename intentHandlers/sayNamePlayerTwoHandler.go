@@ -17,12 +17,21 @@ func RespondToNamePlayerTwo(dfReq df.Request) (*df.Response, error) {
 		"<speak>Alles klar! der Name von Spieler 2 ist "+nameP2+"! Seid ihr bereit für die erste Runde?</speak>",
 		"Alles klar, der Name von Spieler 2 ist "+nameP2+"! Seid ihr bereit für die erste Runde?")
 
+	suggestions := []df.Suggestion{
+		{
+			Title: "bereit",
+		},
+	}
+
+	payload.Google.RichResponse.Suggestions = suggestions
+
 	resp := &df.Response{
 		Source:  source,
 		Payload: payload,
 		OutputContexts: []df.Context{
 			df.MakeOutputContext("ask_first_player", 3, gs.ToParameters(), dfReq),
 			df.MakeOutputContext("game_session", 5, gs.ToParameters(), dfReq),
+			df.MakeOutputContext("name_player_two", 0, nil, dfReq),
 		},
 		//FollowupEventInput: &df.EventInput{
 		//	Name: "quiz_turn_1_question",

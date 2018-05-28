@@ -43,6 +43,7 @@ func makeQuestionSecondPlayer(dfReq df.Request, gs *df.GameSession) *df.Response
 		OutputContexts: []df.Context{
 			df.MakeOutputContext("second_player_answer", 3, nil, dfReq),
 			df.MakeOutputContext("game_session", 5, gs.ToParameters(), dfReq),
+			df.MakeOutputContext("first_player_answer", 0, nil, dfReq),
 		},
 	}
 
