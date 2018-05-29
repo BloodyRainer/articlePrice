@@ -6,12 +6,16 @@ import (
 )
 
 type Guess struct {
-	ArticleNr   string  `json:"articleNumber"`
-	ArticleName string  `json:"articleName"`
-	ActualPrice float64 `json:"actualPrice"`
-	PriceGuess  float64 `json:"number"`
-	OrgNumber   string  `json:"number.original"`
-	Link        string  `json:"link"`
+	ArticleNr   string       `json:"articleNumber"`
+	ArticleName string       `json:"articleName"`
+	ActualPrice float64      `json:"actualPrice"`
+	Price       UnitCurrency `json:"unit-currency"`
+	Link        string       `json:"link"`
+}
+
+type UnitCurrency struct {
+	Amount   float64 `json:"amount"`
+	Currency string  `json:"currency"`
 }
 
 func MakeGuessFromDfRequest(dfReq Request) (Guess, error) {
@@ -37,4 +41,3 @@ func makeGuessFromContextParameters(parameters []byte) (Guess, error) {
 
 	return g, err
 }
-

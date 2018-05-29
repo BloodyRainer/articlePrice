@@ -1,13 +1,16 @@
 package intentHandlers
 
-import "github.com/BloodyRainer/articlePrice/df"
+import (
+	"github.com/BloodyRainer/articlePrice/df"
+	"context"
+)
 
 // in case guessed price could not be parsed
 func AskForNewInput() *df.Response {
 	return makeNewInputResponse()
 }
 
-func RespondToPriceGuess(dfReq df.Request) (*df.Response, error) {
+func RespondToPriceGuess(ctx context.Context, dfReq df.Request) (*df.Response, error) {
 
 	g, err := df.MakeGuessFromDfRequest(dfReq)
 	if err != nil {
@@ -21,7 +24,7 @@ func RespondToPriceGuess(dfReq df.Request) (*df.Response, error) {
 
 // the response asks for new input
 func makeNewInputResponse() *df.Response {
-	text := "Das habe ich nicht verstanden. Sage Preise am besten ohne Cent-Betraege, also zum Beispiel 59 oder 59 Euro."
+	text := "Das habe ich nicht verstanden. Sage Preise am besten ohne Cent-Beträge, also zum Beispiel 59 Euro."
 	payload := df.MakeSimpleRespPayload(false, text, text)
 
 	return &df.Response{
@@ -60,7 +63,7 @@ func makeEvaluatedResponse(g df.Guess) *df.Response {
 // first response is text-to-speech, second is display-text
 func calculateResponse(g df.Guess) (string, string) {
 
-	diffPercent := differenceGuessActualInPercent(g.PriceGuess, g.ActualPrice)
+	diffPercent := differenceGuessActualInPercent(g.Price.Amount, g.ActualPrice)
 	tr := calculateDiffPercentTreshold(g)
 
 	if diffPercent > 2.5*tr {
@@ -70,11 +73,11 @@ func calculateResponse(g df.Guess) (string, string) {
 		return "<speak> <audio src='https://firebasestorage.googleapis.com/v0/b/whatisit-72c26.appspot.com/o/success.mp3?alt=media'></audio> Gar nicht schlecht! <break time='500ms'/> Der Artikel kostet in Wirklichkeit aber nur " + df.PriceInEuroTTS(g.ActualPrice) + ". </speak>",
 			"Gar nicht schlecht, der Artikel kostet in Wirklichkeit aber nur " + df.PriceInEuroText(g.ActualPrice) + ". "
 	} else if diffPercent < -tr*9 {
-		return "<speak> Ja ganz genau! <break time='500ms'/> Du kannst den Artikel fuer " + df.PriceInEuroTTS(g.PriceGuess) +
+		return "<speak> Ja ganz genau! <break time='500ms'/> Du kannst den Artikel fuer " + df.PriceInEuroTTS(g.Price.Amount) +
 			" sofort in dem Paketshop direkt im Schokoladenviertel auf dem Zucker Berg in der Wuensch Dir Was Allee abholen! " +
 			"<audio src='https://actions.google.com/sounds/v1/cartoon/drum_roll.ogg' clipEnd='4s'></audio> <break time='700ms'/> Nein, " +
 			"der echte Preis ist natuerlich " + df.PriceInEuroTTS(g.ActualPrice) + ". </speak>",
-			"Ja ganz genau, du kannst den Artikel fuer " + df.PriceInEuroText(g.PriceGuess) +
+			"Ja ganz genau, du kannst den Artikel fuer " + df.PriceInEuroText(g.Price.Amount) +
 				" sofort in dem Paketshop direkt im Schokoladenviertel auf dem Zuckerberg in der Wuensch-Dir-Was-Allee abholen!" +
 				" Nein, der echte Preis ist natuerlich " + df.PriceInEuroText(g.ActualPrice) + "."
 	} else if diffPercent < - 2.5*tr {

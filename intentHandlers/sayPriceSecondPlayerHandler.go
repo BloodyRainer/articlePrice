@@ -8,7 +8,7 @@ import (
 	"context"
 )
 
-const endingTurn = 4
+const endingTurn = 5
 
 func SavePriceSecondPlayerAndResultsOfTurn(ctx context.Context, dfReq df.Request) (*df.Response, error) {
 

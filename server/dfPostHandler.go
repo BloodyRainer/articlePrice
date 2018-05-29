@@ -49,7 +49,7 @@ func (rcv *fullfilmentHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 			return
 		}
 	case "say_price":
-		dfRes, err = intentHandlers.RespondToPriceGuess(*dfReq)
+		dfRes, err = intentHandlers.RespondToPriceGuess(ctx, *dfReq)
 		if err != nil {
 			engLog.Warningf(ctx, "failed to evaluate input: "+err.Error())
 			dfRes = intentHandlers.AskForNewInput()

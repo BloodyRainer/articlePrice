@@ -19,7 +19,7 @@ func (rcv Article) String() string {
 func (rcv Article) ToParameters() []byte {
 	params := MakeParameters("articleNumber", rcv.ArticleNr)
 	params = AppendString(params, "articleName", rcv.Name)
-	params = AppendString(params, "actualPrice", rcv.Price)
+	params = AppendNonString(params, "actualPrice", rcv.Price)
 	params = AppendString(params, "imgUrl", rcv.ImgUrl)
 	params = AppendString(params, "link", rcv.Link)
 
