@@ -46,7 +46,7 @@ func makeResultsCurrentTurn(ctx context.Context, dfReq df.Request, gs *df.GameSe
 		tts.WriteString(" <break time='2000ms'/> Es folgt die vorletzte Runde! <break time='1000ms'/>Seid ihr bereit?</speak>")
 		text.WriteString("\n\nEs folgt die vorletzte Runde, seid ihr bereit?")
 	} else if turn == endingTurn -1 {
-		tts.WriteString(" <break time='2000ms'/> Es folgt die letzte Runde, <break time='300ms'/> also strengt euch noch mal an! <break time='1000ms'/>Seid ihr bereit?</speak>")
+		tts.WriteString(" <break time='2000ms'/> Es folgt die letzte Runde! <break time='1000ms'/>Seid ihr bereit?</speak>")
 		text.WriteString("\n\nEs folgt die letzte Runde, also strengt euch noch mal an! Seid ihr bereit?")
 	} else {
 		tts.WriteString(" <break time='2000ms'/> Bereit für die nächste Runde?</speak>")

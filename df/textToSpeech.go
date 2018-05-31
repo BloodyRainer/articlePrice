@@ -47,6 +47,7 @@ func ModifyForTTS(text string) string {
 	//TODO: ampersand-bug in ssml!?
 	tts = strings.Replace(tts, "&", " und ", -1)
 	tts = strings.Replace(tts, "inkl.", "inklusive", -1)
+	tts = strings.Replace(tts, "incl.", "inklusive", -1)
 	tts = strings.Replace(tts, "einschl.", "einschließlich", -1)
 	tts = strings.Replace(tts, "tlg.", "teilig", -1)
 	tts = strings.Replace(tts, "-tlg.", " teilig", -1)
