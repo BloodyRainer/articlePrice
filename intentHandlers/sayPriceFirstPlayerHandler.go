@@ -35,7 +35,7 @@ func makeQuestionSecondPlayer(dfReq df.Request, gs *df.GameSession) *df.Response
 
 	payload := df.MakeSimpleRespPayload(true,
 		"<speak> " + pName+", für "+ points +" Punkte, wie ist dein Tipp?</speak>",
-		pName+", für "+ points +" Punkte, wie ist dein Tipp?")
+		pName+" - für "+ points +" Punkte!")
 
 	resp := &df.Response{
 		Source:  source,

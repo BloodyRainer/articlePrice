@@ -1,10 +1,13 @@
 package intentHandlers
 
-import "github.com/BloodyRainer/articlePrice/df"
+import (
+	"github.com/BloodyRainer/articlePrice/df"
+	"strings"
+)
 
 func RespondToNamePlayerTwo(dfReq df.Request) (*df.Response, error) {
 
-	nameP2 := dfReq.QueryResult.QueryText
+	nameP2 := strings.Title(dfReq.QueryResult.QueryText)
 
 	gs, err := df.MakeGameSessionFromDfRequest(dfReq)
 	if err != nil {

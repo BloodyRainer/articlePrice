@@ -2,11 +2,12 @@ package intentHandlers
 
 import (
 	"github.com/BloodyRainer/articlePrice/df"
+	"strings"
 )
 
 func RespondToNamePlayerOne(dfReq df.Request) (*df.Response, error) {
 
-	nameP1 := dfReq.QueryResult.QueryText
+	nameP1 := strings.Title(dfReq.QueryResult.QueryText)
 
 	gs := df.GameSession{
 		NamePlayerOne: nameP1,

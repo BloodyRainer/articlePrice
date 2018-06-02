@@ -7,8 +7,6 @@ import (
 	engLog "google.golang.org/appengine/log"
 )
 
-const source = "Der Preis ist heiss"
-
 func AskRandomArticle(ctx context.Context, dfReq *df.Request) (*df.Response, error) {
 	a, err := search.GetRandomArticle(ctx)
 
