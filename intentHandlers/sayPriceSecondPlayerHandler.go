@@ -42,13 +42,13 @@ func makeResultsCurrentTurn(ctx context.Context, dfReq df.Request, gs *df.GameSe
 		lifeSpanAfp = 0
 	} else if turn == endingTurn -2 {
 		tts.WriteString(" <break time='2000ms'/> Es folgt die vorletzte Runde! <break time='1000ms'/>Seid ihr bereit?</speak>")
-		text.WriteString("\n\nVorletzte Runde! Seid ihr bereit?")
+		text.WriteString("\n\nVorletzte Runde! Bereit?")
 	} else if turn == endingTurn -1 {
 		tts.WriteString(" <break time='2000ms'/> Es folgt die letzte Runde! <break time='1000ms'/>Seid ihr bereit?</speak>")
 		text.WriteString("\n\nLetzte Runde! Bereit?")
 	} else {
 		tts.WriteString(" <break time='2000ms'/> Bereit für die nächste Runde?</speak>")
-		text.WriteString("\n\nBereit für die nächste Runde?")
+		text.WriteString("\n\nNächste Runde?")
 	}
 
 	// reset article for next turn
