@@ -2,7 +2,7 @@
 
 local() {
     go test ./...
-    python2 ~/google-cloud-sdk/bin/dev_appserver.py ./appeng/app.yaml
+    python2 /usr/lib/google-cloud-sdk/bin/dev_appserver.py ./appeng/app.yaml
 }
 
 remote() {

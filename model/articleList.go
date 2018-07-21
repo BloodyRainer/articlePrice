@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-var articles = []string{
+var articleNumbers = []string{
 	"3390374673",
 	"2185032982",
 	"4063796335",
@@ -15,7 +15,6 @@ var articles = []string{
 	"251629",
 	"100890",
 	"B832U4P",
-	"B8L8C9P",
 	"25424296",
 	"8495580599",
 	"251626",
@@ -113,7 +112,6 @@ var articles = []string{
 	"2897671536",
 	"2939932",
 	"4948592",
-	"466983D",
 	"9735246956",
 	"883466G",
 	"29695970",
@@ -121,6 +119,7 @@ var articles = []string{
 	"81127284",
 	"8148100168",
 	"8761546639",
+	"63972988",
 	"5122213442",
 	"15177887",
 	"9074281423",
@@ -144,7 +143,6 @@ var articles = []string{
 	"597684A",
 	"70297282",
 	"31807896",
-	"49849182",
 	"83309372",
 	"169351P",
 	"88208791",
@@ -153,6 +151,10 @@ var articles = []string{
 func RandomArticleNr() string {
 	s := rand.NewSource(time.Now().UTC().UnixNano())
 	r := rand.New(s)
-	i := r.Intn(len(articles))
-	return articles[i]
+	i := r.Intn(len(articleNumbers))
+	return articleNumbers[i]
+}
+
+func GetArticles() []string {
+	return articleNumbers
 }

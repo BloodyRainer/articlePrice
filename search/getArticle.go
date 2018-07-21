@@ -28,7 +28,7 @@ func GetRandomArticle(ctx context.Context) (*df.Article, error) {
 }
 
 func requestArticleByArticleNr(ctx context.Context, articleNr string) (*df.Article, error) {
-	respBody, url, err := searchArticle(ctx, articleNr)
+	respBody, url, err := searchArticleByNr(ctx, articleNr)
 	if err != nil {
 		return nil, err
 	}
