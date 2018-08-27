@@ -17,8 +17,8 @@ func RespondToNamePlayerOne(dfReq df.Request) (*df.Response, error) {
 	}
 
 	payload := df.MakeSimpleRespPayload(true,
-		"<speak>Ok, der Name von Spieler <say-as interpret-as='cardinal'>1</say-as> ist "+nameP1+"! Wie ist der Name von Spieler 2?</speak>",
-		"Ok, der Name von Spieler 1 ist "+nameP1+"! Wie ist der Name von Spieler 2?")
+		"<speak>Ok, wie ist der Name von Spieler 2?</speak>",
+		"Wie ist der Name von Spieler 2?")
 
 	resp := &df.Response{
 		Source:  source,

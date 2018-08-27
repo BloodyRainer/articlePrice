@@ -24,7 +24,7 @@ func IntegrationTestArticleListHandler(w http.ResponseWriter, r *http.Request) {
 			log.Infof(ctx, "Success: Found Article-Number %v", aNr)
 		}
 
-		time.Sleep(3 * time.Second)
+		time.Sleep(1 * time.Second)
 	}
 
 	if len(badNumbers) == 0 {

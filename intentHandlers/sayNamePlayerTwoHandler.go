@@ -17,8 +17,8 @@ func RespondToNamePlayerTwo(dfReq df.Request) (*df.Response, error) {
 	gs.NamePlayerTwo = nameP2
 
 	payload := df.MakeSimpleRespPayload(true,
-		"<speak>Alles klar! der Name von Spieler 2 ist "+nameP2+"! Seid ihr bereit für die erste Runde?</speak>",
-		"Alles klar, der Name von Spieler 2 ist "+nameP2+"! Seid ihr bereit für die erste Runde?")
+		"<speak>Alles klar! Bereit für die erste Runde?</speak>",
+		"Seid ihr bereit für die erste Runde?")
 
 	suggestions := []df.Suggestion{
 		{

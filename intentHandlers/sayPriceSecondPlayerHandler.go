@@ -41,13 +41,13 @@ func makeResultsCurrentTurn(ctx context.Context, dfReq df.Request, gs *df.GameSe
 		lifeSpanGs = 0
 		lifeSpanAfp = 0
 	} else if turn == endingTurn -2 {
-		tts.WriteString(" <break time='2000ms'/> Es folgt die vorletzte Runde! <break time='1000ms'/>Seid ihr bereit?</speak>")
+		tts.WriteString(" <break time='300ms'/> Es folgt die vorletzte Runde! <break time='100ms'/>Seid ihr bereit?</speak>")
 		text.WriteString("\n\nVorletzte Runde! Bereit?")
 	} else if turn == endingTurn -1 {
-		tts.WriteString(" <break time='2000ms'/> Es folgt die letzte Runde! <break time='1000ms'/>Seid ihr bereit?</speak>")
+		tts.WriteString(" <break time='300ms'/> Es folgt die letzte Runde! <break time='100ms'/>Seid ihr bereit?</speak>")
 		text.WriteString("\n\nLetzte Runde! Bereit?")
 	} else {
-		tts.WriteString(" <break time='2000ms'/> Bereit für die nächste Runde?</speak>")
+		tts.WriteString(" <break time='300ms'/> Bereit für die nächste Runde?</speak>")
 		text.WriteString("\n\nNächste Runde?")
 	}
 
@@ -100,11 +100,11 @@ func appendFinalResult(tts, text *bytes.Buffer, gs *df.GameSession) {
 	w, l, wp, lp := gs.GetFinalResult()
 
 	if wp != lp {
-		tts.WriteString("<break time='2000ms'/> Die letzte Runde ist abgeschlossen. <break time='1000ms'/>")
+		tts.WriteString("<break time='500ms'/> Die letzte Runde ist abgeschlossen. <break time='100ms'/>")
 		tts.WriteString(l)
 		tts.WriteString(" hat insgesamt <say-as interpret-as='cardinal'>")
 		tts.WriteString(lp)
-		tts.WriteString("</say-as> Punkte gesammelt. <break time='1000ms'/>")
+		tts.WriteString("</say-as> Punkte gesammelt. <break time='300ms'/>")
 		tts.WriteString(w)
 		tts.WriteString(" kommt hingegen auf <say-as interpret-as='cardinal'>")
 		tts.WriteString(wp)
@@ -149,7 +149,7 @@ func generateTTSAndTextAnswer(gs *df.GameSession) (bytes.Buffer, bytes.Buffer) {
 		tts.WriteString(df.PriceInEuroTTS(gs.CurrentArticlePrice))
 		tts.WriteString(" und bekommt <say-as interpret-as='cardinal'>")
 		tts.WriteString(wp)
-		tts.WriteString("</say-as> Punkte! <break time='500ms'/>")
+		tts.WriteString("</say-as> Punkte! <break time='200ms'/>")
 		tts.WriteString(l)
 		tts.WriteString(" erhält <say-as interpret-as='cardinal'>")
 		tts.WriteString(lp)
